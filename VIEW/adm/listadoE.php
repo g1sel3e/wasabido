@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . "/wasabido/verificacao.php";
+require_once __DIR__ . "/../../verificacao.php";
 require "../../DAO/EntregadorDAO.php";
 require "../../DAO/ClienteDAO.php";
 require "../../DAO/AdmDAO.php"; 
@@ -259,8 +259,8 @@ $nome_admin = $_SESSION['adm_nome'] ?? "Administrador";
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <div class="navbar-brand">
-    <img src="../../imagens/ws.png" alt="Logo">
-</div>
+                <img src="../../imagens/ws.png" alt="Logo">
+            </div>
 
             <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menuNav">
                 <span class="navbar-toggler-icon"></span>
