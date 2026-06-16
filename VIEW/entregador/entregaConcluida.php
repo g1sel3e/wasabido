@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . "/wasabido/verificacao.php";
+require_once __DIR__ . "/../../verificacao.php";
 require "../../DAO/PedidoDAO.php";
 
 $pedidoDAO = new PedidoDAO();
