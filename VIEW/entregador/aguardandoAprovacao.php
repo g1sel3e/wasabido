@@ -63,13 +63,13 @@ if (session_status() === PHP_SESSION_NONE) {
   <script>
     // Executa a validação em segundo plano de tempos em tempos
     function verificarAprovacaoAutomatica() {
-      // Faz a chamada para o script PHP que está na mesma pasta
-      fetch('status_check.php')
+      // CORREÇÃO: Alterado de 'status_check.php' para o nome correto do seu arquivo 'verificar_status.php'
+      fetch('verificar_status.php')
         .then(response => response.json())
         .then(data => {
           if (data.status === 'Aprovado') {
             // REDIRECIONA AUTOMATICAMENTE
-            // Altere para o nome correto do arquivo da dashboard do entregador (ex: index.php ou painel.php)
+            // Lembre-se de mudar "index.php" caso a tela do entregador tenha outro nome (ex: painel.php)
             window.location.href = "index.php"; 
           }
         })
