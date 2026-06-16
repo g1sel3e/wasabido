@@ -1,6 +1,6 @@
 <?php
 // 1. Primeiro verifica se está logado
-require_once $_SERVER['DOCUMENT_ROOT'] . "/wasabido/verificacao.php";
+require_once __DIR__ . "/../../verificacao.php";
 
 // 2. Depois carrega as dependências de banco de dados
 require "../../DAO/PedidoDAO.php";
