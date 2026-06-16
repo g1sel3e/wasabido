@@ -1,23 +1,28 @@
 <?php
 // 1. CONEXÃO COM O BANCO DE DADOS
-// Substitua pelos seus dados de conexão reais ou faça o include do seu arquivo
 try {
     $pdo = new PDO("mysql:host=localhost;dbname=wasabido_a;charset=utf8", "wasabido", "2008wasabido@");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // 2. CONSULTA COM INNER JOIN
-    // IMPORTANTE: Ajuste o nome da tabela 'cliente' e da coluna 'nome' se no seu banco for diferente (ex: 'clientes', 'nome_cliente')
-    $sql = "SELECT a.nota, a.comentario, c.nome 
+    // 2. CONSULTA COM LEFT JOIN NAS TRÊS TABELAS DE USUÁRIOS
+    // Buscamos os nomes de cada tabela. Ajuste o nome das tabelas/colunas se forem diferentes no seu banco.
+    $sql = "SELECT 
+                a.nota, 
+                a.comentario, 
+                a.tipo_avaliacao,
+                c.nome AS nome_cliente,
+                e.nome AS nome_entregador,
+                adm.nome AS nome_admin
             FROM avaliacao a
-            INNER JOIN cliente c ON a.cod_cliente = c.cod
-            WHERE a.tipo_avaliacao IN ('comida', 'pedido', 'sistema')
+            LEFT JOIN cliente c ON a.cod_cliente = c.cod
+            LEFT JOIN entregador e ON a.cod_entregador = e.cod
+            LEFT JOIN administrador adm ON a.cod_administrador = adm.cod
             ORDER BY a.cod DESC";
             
     $stmt = $pdo->query($sql);
     $avaliacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    // Evita quebrar a página exibindo um array vazio caso o banco falhe
     $avaliacoes = [];
     $erro_banco = $e->getMessage();
 }
@@ -163,7 +168,7 @@ try {
 
   <div class="container hero">
     <h1>Avaliações do <span>WasabiDO</span></h1>
-    <div class="nota">Experiências reais dos clientes</div>
+    <div class="nota">Experiências reais da nossa comunidade</div>
   </div>
 
   <div class="container pb-5">
@@ -171,11 +176,25 @@ try {
 
       <?php if (!empty($avaliacoes)): ?>
         <?php foreach ($avaliacoes as $review): 
-            // 1. Pega dinamicamente a primeira letra do nome do cliente vindo do JOIN
-            $nomeCliente = !empty($review['nome']) ? $review['nome'] : "Usuário Anônimo";
-            $primeiraLetra = strtoupper(substr($nomeCliente, 0, 1));
+            // LÓGICA PARA IDENTIFICAR QUEM AVALIOU E DEFINIR O NOME E O CARGO
+            $nomeExibido = "Usuário Anônimo";
+            $cargoExibido = "Membro";
+
+            if (!empty($review['nome_cliente'])) {
+                $nomeExibido = $review['nome_cliente'];
+                $cargoExibido = "Cliente";
+            } elseif (!empty($review['nome_entregador'])) {
+                $nomeExibido = $review['nome_entregador'];
+                $cargoExibido = "Entregador";
+            } elseif (!empty($review['nome_admin'])) {
+                $nomeExibido = $review['nome_admin'];
+                $cargoExibido = "Administrador";
+            }
+
+            // Captura a primeira letra do nome ativo
+            $primeiraLetra = strtoupper(substr($nomeExibido, 0, 1));
             
-            // 2. Mapeia a nota vinda da coluna 'nota' do seu banco (garante valor entre 1 e 5)
+            // Validação do intervalo da nota
             $notaReal = isset($review['nota']) ? (int)$review['nota'] : 5;
             if ($notaReal < 1) $notaReal = 1;
             if ($notaReal > 5) $notaReal = 5;
@@ -185,16 +204,16 @@ try {
             <div class="avaliacao">
               <div class="avatar"><?= htmlspecialchars($primeiraLetra) ?></div>
               <div>
-                <div class="nome"><?= htmlspecialchars($nomeCliente) ?></div>
-                <div class="cargo">Cliente</div>
+                <div class="nome"><?= htmlspecialchars($nomeExibido) ?></div>
+                <div class="cargo"><?= $cargoExibido ?></div>
                 
                 <div class="estrelas">
                   <?php 
                   for ($i = 1; $i <= 5; $i++) {
                       if ($i <= $notaReal) {
-                          echo '<i class="bi bi-star-fill"></i>'; // Estrela cheia
+                          echo '<i class="bi bi-star-fill"></i>';
                       } else {
-                          echo '<i class="bi bi-star"></i>';      // Estrela vazia
+                          echo '<i class="bi bi-star"></i>';
                       }
                   }
                   ?>
@@ -211,9 +230,6 @@ try {
       <?php else: ?>
         <div class="col-12 text-center py-5">
           <p class="text-muted">Nenhuma avaliação encontrada no momento.</p>
-          <?php if (isset($erro_banco)): ?>
-             <small class="text-danger">Erro de comunicação com o banco.</small>
-          <?php endif; ?>
         </div>
       <?php endif; ?>
 
