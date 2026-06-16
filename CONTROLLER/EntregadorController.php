@@ -1,21 +1,22 @@
 <?php
-require "../MODEL/EntregadorModel.php";
-require "../DAO/EntregadorDAO.php";
+// Usando caminhos absolutos baseados no diretório atual para evitar falhas de inclusão
+require_once __DIR__ . "/../MODEL/EntregadorModel.php";
+require_once __DIR__ . "/../DAO/EntregadorDAO.php";
 
 $entregador = new Entregador();
 $dao = new EntregadorDAO();
 
-// Captura a ação tanto de POST (formulários) quanto de GET (links)
-$acao = $_POST['acao'] ?? $_GET['acao'] ?? "";
+// $_REQUEST captura a ação de forma limpa, seja vinda de POST (formulários) ou GET (links)
+$acao = $_REQUEST['acao'] ?? "";
 
-$nome = $_POST['nome'] ?? "";
-$email = $_POST['email'] ?? "";
-$senha = $_POST['senha'] ?? "";
-$tel = $_POST['tel'] ?? "";
-$cpf = $_POST['cpf'] ?? "";
-$rg = $_POST['rg'] ?? "";
+$nome    = $_POST['nome'] ?? "";
+$email   = $_POST['email'] ?? "";
+$senha   = $_POST['senha'] ?? "";
+$tel     = $_POST['tel'] ?? "";
+$cpf     = $_POST['cpf'] ?? "";
+$rg      = $_POST['rg'] ?? "";
 $veiculo = $_POST['veiculo'] ?? "";
-$placa = $_POST['placa'] ?? "";
+$placa   = $_POST['placa'] ?? "";
 
 switch ($acao) {
 
@@ -38,7 +39,7 @@ switch ($acao) {
         break;
 
     case "AtualizarStatus":
-        $id = $_POST['cod'] ?? "";
+        $id     = $_POST['cod'] ?? "";
         $status = $_POST['status'] ?? "";
 
         if (!empty($id) && !empty($status)) {
@@ -50,7 +51,7 @@ switch ($acao) {
 
     // NOVO CASE PARA APAGAR
     case "Apagar":
-        $id = $_GET['cod'] ?? ""; // Captura o código vindo do link
+        $id = $_GET['cod'] ?? ""; // Captura o código vindo do link (via GET)
 
         if (!empty($id)) {
             $resultado = $dao->apagar($id);
