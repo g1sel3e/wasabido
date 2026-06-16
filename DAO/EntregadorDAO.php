@@ -1,22 +1,32 @@
 <?php
 class EntregadorDAO
 {
+    // Propriedade privada que armazenará o objeto PDO ativo
+    private $conexao;
+
+    // O construtor captura o retorno direto do arquivo conexao.php
+    public function __construct()
+    {
+        // Força a inclusão do arquivo e guarda o seu "return $conexao;"
+        $this->conexao = require __DIR__ . "/../conexao.php";
+        
+        // Verificação de segurança: impede que a classe rode se o banco falhar
+        if (!$this->conexao instanceof PDO) {
+            die("Erro crítico: O arquivo de conexão não retornou uma instância válida do PDO no EntregadorDAO.");
+        }
+    }
 
     // ============================================================
     // CREATE - INSERIR
     // ============================================================
     function inserir($entregador)
     {
-        // require_once impede que o arquivo de conexão seja reinvocado se já estiver na memória
-        require_once __DIR__ . "/../conexao.php";
-
         try {
-
             $sql = "INSERT INTO entregador 
             (nome, email, senha, tel, cpf, rg, veiculo, placa)
             VALUES (:nome, :email, :senha, :tel, :cpf, :rg, :veiculo, :placa)";
 
-            $consulta = $conexao->prepare($sql);
+            $consulta = $this->conexao->prepare($sql);
 
             $consulta->bindValue(":nome", $entregador->getNome());
             $consulta->bindValue(":email", $entregador->getEmail());
@@ -35,16 +45,13 @@ class EntregadorDAO
         }
     }
 
-
     // ============================================================
     // READ - LISTAR
     // ============================================================
     function listar()
     {
-        require_once __DIR__ . "/../conexao.php";
-
         $sql = "SELECT * FROM entregador ORDER BY nome";
-        $consulta = $conexao->prepare($sql);
+        $consulta = $this->conexao->prepare($sql);
         $consulta->execute();
 
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -55,10 +62,8 @@ class EntregadorDAO
     // ============================================================
     function buscarPorId($cod)
     {
-        require_once __DIR__ . "/../conexao.php";
-
         $sql = "SELECT email, tel, cpf, rg, veiculo, placa FROM entregador WHERE cod = :cod";
-        $consulta = $conexao->prepare($sql);
+        $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(":cod", $cod);
         $consulta->execute();
 
@@ -67,10 +72,8 @@ class EntregadorDAO
 
     public function listarAprovados()
     {
-        require_once __DIR__ . "/../conexao.php";
-
         $sql = "SELECT * FROM entregador WHERE status = 'aprovado'";
-        $stmt = $conexao->prepare($sql);
+        $stmt = $this->conexao->prepare($sql);
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -81,8 +84,6 @@ class EntregadorDAO
     // ============================================================
     function atualizar($entregador)
     {
-        require_once __DIR__ . "/../conexao.php";
-
         $sql = "UPDATE entregador 
                 SET nome = :nome,
                     email = :email,
@@ -92,7 +93,7 @@ class EntregadorDAO
                     placa = :placa
                 WHERE cod = :cod";
 
-        $consulta = $conexao->prepare($sql);
+        $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(":cod", $entregador->getCod());
         $consulta->bindValue(":nome", $entregador->getNome());
         $consulta->bindValue(":email", $entregador->getEmail());
@@ -106,10 +107,8 @@ class EntregadorDAO
 
     function listarPendentes()
     {
-        require_once __DIR__ . "/../conexao.php";
-
         $sql = "SELECT * FROM entregador WHERE status = 'pendente'";
-        $stmt = $conexao->prepare($sql);
+        $stmt = $this->conexao->prepare($sql);
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -117,10 +116,8 @@ class EntregadorDAO
 
     function atualizarStatus($cod, $status)
     {
-        require_once __DIR__ . "/../conexao.php";
-
         $sql = "UPDATE entregador SET status = :status WHERE cod = :cod";
-        $stmt = $conexao->prepare($sql);
+        $stmt = $this->conexao->prepare($sql);
 
         $stmt->bindValue(":status", $status);
         $stmt->bindValue(":cod", $cod);
@@ -133,18 +130,15 @@ class EntregadorDAO
     // ============================================================
     function apagar($cod)
     {
-        require_once __DIR__ . "/../conexao.php";
-
         try {
             $sql = "DELETE FROM entregador WHERE cod = :cod";
-            $consulta = $conexao->prepare($sql);
+            $consulta = $this->conexao->prepare($sql);
             $consulta->bindValue(":cod", $cod);
             $consulta->execute();
 
             return true;
 
         } catch (PDOException $e) {
-
             if ($e->getCode() == 23000) {
                 return "FK";
             }
@@ -158,12 +152,10 @@ class EntregadorDAO
     // ============================================================
     function logar($email, $senha)
     {
-        require_once __DIR__ . "/../conexao.php";
-
         $sql = "SELECT * FROM entregador 
                 WHERE email = :email AND senha = :senha";
 
-        $consulta = $conexao->prepare($sql);
+        $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(":email", $email);
         $consulta->bindValue(":senha", $senha);
         $consulta->execute();
@@ -176,12 +168,10 @@ class EntregadorDAO
     // ============================================================
     function buscar($pesquisa)
     {
-        require_once __DIR__ . "/../conexao.php";
-
         $sql = "SELECT * FROM entregador 
                 WHERE nome LIKE :pesquisa";
 
-        $consulta = $conexao->prepare($sql);
+        $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(":pesquisa", "%" . $pesquisa . "%");
         $consulta->execute();
 
