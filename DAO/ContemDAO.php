@@ -9,6 +9,12 @@ class ContemDAO
     {
         // require_once garante o reuso limpo da conexão em loops de inserção
         require_once __DIR__ . "/../conexao.php";
+        global $conexao;
+
+        // 🛡️ REDE DE SEGURANÇA: Se a conexão global sumiu ou veio nula neste escopo, força a reinjeção local
+        if (!isset($conexao) || $conexao === null) {
+            include __DIR__ . "/../conexao.php";
+        }
 
         try {
 
@@ -39,6 +45,11 @@ class ContemDAO
     public function listarPorPedido($cod_pedido)
     {
         require_once __DIR__ . "/../conexao.php";
+        global $conexao;
+
+        if (!isset($conexao) || $conexao === null) {
+            include __DIR__ . "/../conexao.php";
+        }
 
         $sql = "SELECT 
                     c.cod,
@@ -65,6 +76,11 @@ class ContemDAO
     public function excluir($cod)
     {
         require_once __DIR__ . "/../conexao.php";
+        global $conexao;
+
+        if (!isset($conexao) || $conexao === null) {
+            include __DIR__ . "/../conexao.php";
+        }
 
         try {
             $sql = "DELETE FROM contem WHERE cod = :cod";
