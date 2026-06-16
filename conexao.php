@@ -3,7 +3,7 @@ ob_start();
 $host = "mysql-wasabido.alwaysdata.net"; 
 $dbname = "wasabido_a";          
 $user = "wasabido";         
-$password = "2008wasabido@"; // Coloque aqui a senha que você usa para entrar na Alwaysdata
+$password = "2008wasabido@"; 
 
 try {
     $conexao = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
@@ -11,4 +11,7 @@ try {
 } catch (PDOException $e) {
     echo "Erro na conexão: " . $e->getMessage();
 }
+
+// ADICIONE ESTA LINHA ABAIXO:
+return $conexao; 
 ?>
