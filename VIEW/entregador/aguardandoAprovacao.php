@@ -57,26 +57,27 @@ if (session_status() === PHP_SESSION_NONE) {
     <p class="mb-4 text-sm" style="color: #e60000; font-weight: 500;">
       Assim que seu status mudar para aprovado, você será redirecionado automaticamente para a plataforma de entregas.
     </p>
-    
     <a href="../login.php" class="btn-voltar">Voltar para o Início</a>
   </div>
 
   <script>
-    function checarStatusAprovacao() {
-      // Faz uma requisição assíncrona para o arquivo PHP que criamos
-      fetch('verificar_status.php')
+    // Executa a validação em segundo plano de tempos em tempos
+    function verificarAprovacaoAutomatica() {
+      // Faz a chamada para o script PHP que está na mesma pasta
+      fetch('status_check.php')
         .then(response => response.json())
         .then(data => {
           if (data.status === 'Aprovado') {
-            // Mude o caminho abaixo para a tela principal do entregador
-            window.location.href = "../VIEW/entregador/entregador.php"; 
+            // REDIRECIONA AUTOMATICAMENTE
+            // Altere para o nome correto do arquivo da dashboard do entregador (ex: index.php ou painel.php)
+            window.location.href = "index.php"; 
           }
         })
-        .catch(error => console.error('Erro ao verificar status:', error));
+        .catch(error => console.error("Erro na requisição de checagem:", error));
     }
 
-    // Executa a função a cada 5000 milissegundos (5 segundos)
-    setInterval(checarStatusAprovacao, 5000);
+    // Configura o intervalo de checagem para rodar a cada 4 segundos (4000ms)
+    setInterval(verificarAprovacaoAutomatica, 4000);
   </script>
 
 </body>
