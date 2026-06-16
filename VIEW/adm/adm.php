@@ -1,5 +1,6 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . "/wasabido/verificacao.php";
+// 🛡️ CORREÇÃO DE CAMINHO SEGURO UTILIZANDO NAVEGAÇÃO RELATIVA VIA __DIR__
+require_once __DIR__ . "/../../verificacao.php";
 $nome = $_SESSION['nome'] ?? "Administrador";
 ?>
 <!DOCTYPE html>
