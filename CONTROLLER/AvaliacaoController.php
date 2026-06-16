@@ -6,6 +6,17 @@ if (session_status() === PHP_SESSION_NONE) {
 // Inclusão segura baseada no diretório do arquivo atual
 require_once __DIR__ . "/../DAO/AvaliacaoDAO.php";
 
+class AvaliacaoController
+{
+    // ==== MÉTODO ADICIONADO PARA BUSCAR DADOS NA VIEW ====
+    public function listarAvaliacoesGerais()
+    {
+        $avaliacaoDAO = new AvaliacaoDAO();
+        return $avaliacaoDAO->listarTodasComUsuarios();
+    }
+}
+
+// --- LOGICA DE PROCESSAMENTO DE ROTAS POST/GET ---
 $action = $_GET['action'] ?? '';
 
 if ($action === 'salvar') {
@@ -33,7 +44,7 @@ if ($action === 'salvar') {
             'cod_entregador'    => $_POST['cod_entregador'] ?? null,
             'cod_pedido'        => $_POST['cod_pedido'] ?? null,
             'cod_produto'       => $_POST['cod_produto'] ?? null,
-            'cod_administrador' => $cod_administrador // Captura o ID do Admin para enviar ao DAO
+            'cod_administrador' => $cod_administrador 
         ];
 
         // --- VALIDAÇÃO INTELIGENTE ---
@@ -52,15 +63,12 @@ if ($action === 'salvar') {
 
         // --- REDIRECIONAMENTO DINÂMICO ---
         if ($sucesso) {
-            // Se quem enviou o formulário foi o Administrador
             if (!empty($dados['cod_administrador'])) {
                 header("Location: ../VIEW/adm/avaliacaoAdministrador.php");
             } 
-            // Se quem avaliou foi o entregador
-            elseif (in_array($dados['tipo_avaliacao'], ['cliente', 'estabelecimento'])) {
+            elseif (in_array($dados['tipo_avaliacao'], ['cliente', 'estabelecimento'], true)) {
                 header("Location: ../VIEW/entregador/avaliacaoEntregador.php");
             } 
-            // Caso contrário, mantém o fluxo padrão do cliente
             else {
                 header("Location: ../VIEW/cliente/avaliacaoCliente.php");
             }
