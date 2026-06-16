@@ -1,6 +1,7 @@
 <?php
-require "../MODEL/AdmModel.php";
-require "../DAO/AdmDAO.php";
+// Usando caminhos absolutos baseados no diretório atual para evitar falhas de inclusão
+require_once __DIR__ . "/../MODEL/AdmModel.php";
+require_once __DIR__ . "/../DAO/AdmDAO.php";
 
 $adm = new Adm();
 $dao = new AdmDAO();
@@ -73,7 +74,10 @@ switch ($acao) {
         $resultado = $dao->logar($email, $senha);
 
         if ($resultado != false) {
-            session_start();
+            // Se a sessão já não tiver sido iniciada na verificação, inicia aqui
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             $_SESSION['adm_id'] = $resultado['cod'];
             $_SESSION['adm_nome'] = $resultado['nome'];
             header("Location: ../VIEW/adm/painel.php"); // Ajustado para seu painel
