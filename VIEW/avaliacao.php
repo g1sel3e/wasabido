@@ -1,3 +1,27 @@
+<?php
+// 1. CONEXÃO COM O BANCO DE DADOS
+// Substitua pelos seus dados de conexão reais ou faça o include do seu arquivo
+try {
+    $pdo = new PDO("mysql:host=localhost;dbname=wasabido_a;charset=utf8", "wasabido", "2008wasabido@");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // 2. CONSULTA COM INNER JOIN
+    // IMPORTANTE: Ajuste o nome da tabela 'cliente' e da coluna 'nome' se no seu banco for diferente (ex: 'clientes', 'nome_cliente')
+    $sql = "SELECT a.nota, a.comentario, c.nome 
+            FROM avaliacao a
+            INNER JOIN cliente c ON a.cod_cliente = c.cod
+            WHERE a.tipo_avaliacao IN ('comida', 'pedido', 'sistema')
+            ORDER BY a.cod DESC";
+            
+    $stmt = $pdo->query($sql);
+    $avaliacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    // Evita quebrar a página exibindo um array vazio caso o banco falhe
+    $avaliacoes = [];
+    $erro_banco = $e->getMessage();
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -6,7 +30,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Avaliações | WasabiDO</title>
 
-  <!-- Bootstrap + Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -17,7 +40,7 @@
       font-family: 'Segoe UI', sans-serif;
     }
 
-    /* NAVBAR (INALTERADA) */
+    /* NAVBAR */
     .navbar {
       background-color: #000;
       border-bottom: 3px solid #e60000;
@@ -66,7 +89,6 @@
     .estrelas i {
       color: #e60000;
       font-size: 0.85rem;
-      /* menor */
       margin-right: 2px;
       text-shadow: 0 0 6px rgba(230, 0, 0, 0.4);
     }
@@ -80,6 +102,7 @@
       display: flex;
       gap: 15px;
       transition: 0.2s;
+      height: 100%;
     }
 
     .avaliacao:hover {
@@ -96,6 +119,7 @@
       justify-content: center;
       color: #fff;
       font-weight: bold;
+      flex-shrink: 0;
     }
 
     .nome {
@@ -117,11 +141,10 @@
 
 <body>
 
-  <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
       <a href="#" class="navbar-brand">
-        <img src="../imagens/ws.png" />
+        <img src="../imagens/ws.png" alt="Logo" />
       </a>
 
       <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menuNav">
@@ -138,129 +161,61 @@
     </div>
   </nav>
 
-  <!-- HERO -->
   <div class="container hero">
     <h1>Avaliações do <span>WasabiDO</span></h1>
     <div class="nota">Experiências reais dos clientes</div>
   </div>
 
-  <!-- AVALIAÇÕES -->
   <div class="container pb-5">
     <div class="row g-4">
 
-      <!-- 1 -->
-      <div class="col-md-6">
-        <div class="avaliacao">
-          <div class="avatar">J</div>
-          <div>
-            <div class="nome">João Silva</div>
-            <div class="cargo">Cliente</div>
-            <div class="estrelas">
-              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-            </div>
-            <div class="comentario">
-              O sushi chegou muito rápido e estava delicioso, tudo bem fresco.
-            </div>
-          </div>
-        </div>
-      </div>
+      <?php if (!empty($avaliacoes)): ?>
+        <?php foreach ($avaliacoes as $review): 
+            // 1. Pega dinamicamente a primeira letra do nome do cliente vindo do JOIN
+            $nomeCliente = !empty($review['nome']) ? $review['nome'] : "Usuário Anônimo";
+            $primeiraLetra = strtoupper(substr($nomeCliente, 0, 1));
+            
+            // 2. Mapeia a nota vinda da coluna 'nota' do seu banco (garante valor entre 1 e 5)
+            $notaReal = isset($review['nota']) ? (int)$review['nota'] : 5;
+            if ($notaReal < 1) $notaReal = 1;
+            if ($notaReal > 5) $notaReal = 5;
+        ?>
+          
+          <div class="col-md-6">
+            <div class="avaliacao">
+              <div class="avatar"><?= htmlspecialchars($primeiraLetra) ?></div>
+              <div>
+                <div class="nome"><?= htmlspecialchars($nomeCliente) ?></div>
+                <div class="cargo">Cliente</div>
+                
+                <div class="estrelas">
+                  <?php 
+                  for ($i = 1; $i <= 5; $i++) {
+                      if ($i <= $notaReal) {
+                          echo '<i class="bi bi-star-fill"></i>'; // Estrela cheia
+                      } else {
+                          echo '<i class="bi bi-star"></i>';      // Estrela vazia
+                      }
+                  }
+                  ?>
+                </div>
 
-      <!-- 2 -->
-      <div class="col-md-6">
-        <div class="avaliacao">
-          <div class="avatar">M</div>
-          <div>
-            <div class="nome">Maria Souza</div>
-            <div class="cargo">Cliente</div>
-            <div class="estrelas">
-              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-half"></i>
-            </div>
-            <div class="comentario">
-              Gostei muito do atendimento e a comida veio bem organizada.
+                <div class="comentario">
+                  <?= !empty($review['comentario']) ? nl2br(htmlspecialchars($review['comentario'])) : '<i>Avaliação sem comentários adicionais.</i>' ?>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- 3 -->
-      <div class="col-md-6">
-        <div class="avaliacao">
-          <div class="avatar">C</div>
-          <div>
-            <div class="nome">Carlos Lima</div>
-            <div class="cargo">Cliente</div>
-            <div class="estrelas">
-              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-            </div>
-            <div class="comentario">
-              As entregas são rápidas e os pedidos chegam certinhos.
-            </div>
-          </div>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <div class="col-12 text-center py-5">
+          <p class="text-muted">Nenhuma avaliação encontrada no momento.</p>
+          <?php if (isset($erro_banco)): ?>
+             <small class="text-danger">Erro de comunicação com o banco.</small>
+          <?php endif; ?>
         </div>
-      </div>
-
-      <!-- 4 -->
-      <div class="col-md-6">
-        <div class="avaliacao">
-          <div class="avatar">A</div>
-          <div>
-            <div class="nome">Ana Costa</div>
-            <div class="cargo">Cliente</div>
-            <div class="estrelas">
-              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-              <i class="bi bi-star"></i>
-            </div>
-            <div class="comentario">
-              Comida muito boa e bem feita, gostei bastante.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 5 -->
-      <div class="col-md-6">
-        <div class="avaliacao">
-          <div class="avatar">P</div>
-          <div>
-            <div class="nome">Pedro Oliveira</div>
-            <div class="cargo">Cliente</div>
-            <div class="estrelas">
-              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-            </div>
-            <div class="comentario">
-              Qualidade excelente, tudo muito saboroso.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 6 -->
-      <div class="col-md-6">
-        <div class="avaliacao">
-          <div class="avatar">L</div>
-          <div>
-            <div class="nome">Lucas Ferreira</div>
-            <div class="cargo">Cliente</div>
-            <div class="estrelas">
-              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
-              <i class="bi bi-star"></i>
-            </div>
-            <div class="comentario">
-              Entrega foi tranquila e a comida veio quente.
-            </div>
-          </div>
-        </div>
-      </div>
+      <?php endif; ?>
 
     </div>
   </div>
