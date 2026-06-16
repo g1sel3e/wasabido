@@ -11,8 +11,8 @@ if (!isset($_SESSION['cod'])) {
 
 $idClienteLogado = $_SESSION['cod'];
 
-// Importa o ClienteController para acessar a função de listagem
-require_once $_SERVER['DOCUMENT_ROOT'] . "/wasabido/CONTROLLER/ClienteController.php";
+// CORRIGIDO: Importa o ClienteController usando caminho relativo universal
+require_once __DIR__ . "/../../CONTROLLER/ClienteController.php";
 
 // Invoca a função para coletar os endereços associados ao cliente logado
 $listaEnderecos = listarEnderecosDoCliente($idClienteLogado);
@@ -287,7 +287,7 @@ $listaEnderecos = listarEnderecosDoCliente($idClienteLogado);
           <li class="nav-item d-none d-lg-block text-white-50 opacity-25 ms-2">|</li>
 
           <li class="nav-item">
-            <a href="entregador.php" class="nav-link voltar-link ms-2">
+            <a href="cliente.php" class="nav-link voltar-link ms-2">
               <i class="bi bi-box-arrow-left text-danger me-1"></i> Voltar
             </a>
           </li>
@@ -325,7 +325,7 @@ $listaEnderecos = listarEnderecosDoCliente($idClienteLogado);
         <div class="col-lg-5">
           <h6>Cadastrar Novo Endereço</h6>
 
-          <form action="/wasabido/CONTROLLER/ClienteController.php" method="POST">
+          <form action="../../CONTROLLER/ClienteController.php" method="POST">
             <input type="hidden" name="acao" value="InserirEndereco">
             <input type="hidden" name="cod" value="<?php echo $idClienteLogado; ?>">
 
@@ -445,15 +445,12 @@ $listaEnderecos = listarEnderecosDoCliente($idClienteLogado);
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    // Função em JavaScript para alimentar e abrir o modal dinamicamente no meio da tela
     function confirmarExclusaoModal(cep) {
-      // Monta a URL de exclusão com o CEP selecionado
-      const urlDestino = `/wasabido/CONTROLLER/ClienteController.php?acao=ExcluirEndereco&id=${encodeURIComponent(cep)}`;
+      // CORRIGIDO: Rota de exclusão JavaScript sem /wasabido/
+      const urlDestino = `../../CONTROLLER/ClienteController.php?acao=ExcluirEndereco&id=${encodeURIComponent(cep)}`;
 
-      // Aplica a URL no botão "Sim, Excluir" dentro do modal
       document.getElementById('linkConfirmarExclusao').setAttribute('href', urlDestino);
 
-      // Abre o modal na tela usando a API nativa do Bootstrap
       const meuModal = new bootstrap.Modal(document.getElementById('modalConfirmacaoExcluir'));
       meuModal.show();
     }
