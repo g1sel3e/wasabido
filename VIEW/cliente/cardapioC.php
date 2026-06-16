@@ -376,28 +376,17 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       color: #ff3333;
     }
 
-    /* ESTILIZAÇÃO DO DESLIZAMENTO LATERAL DAS CATEGORIAS */
-    .categorias-wrapper {
+    /* QUADRADOS DE CATEGORIA */
+    .categorias-container {
       max-width: 800px;
       margin: 0 auto 2rem;
-      overflow-x: auto;
-      webkit-overflow-scrolling: touch;
-      scrollbar-width: none; /* Oculta barra no Firefox */
-    }
-
-    .categorias-wrapper::-webkit-scrollbar {
-      display: none; /* Oculta barra no Chrome/Safari/Edge */
-    }
-
-    .categorias-container {
-      display: flex;
-      flex-wrap: nowrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
       gap: 10px;
       padding: 15px;
       background: rgba(15, 15, 15, 0.5);
       border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.05);
-      width: max-content; /* Impede os botões de esmagarem */
     }
 
     .btn-categoria-box {
@@ -405,7 +394,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       border: 1px solid rgba(255, 255, 255, 0.05);
       border-radius: 12px;
       color: #a1a1aa;
-      padding: 12px 20px; /* Um pouco mais de espaço nas laterais */
+      padding: 12px 8px;
       font-size: 0.85rem;
       font-weight: 600;
       text-align: center;
@@ -416,7 +405,6 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       justify-content: center;
       gap: 6px;
       transition: all 0.2s ease;
-      min-width: 105px; /* Define tamanho mínimo estável para cada caixinha */
     }
 
     .btn-categoria-box:hover {
@@ -474,7 +462,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
     <div class="search-wrapper">
       <div class="search-input-group">
         <i class="bi bi-search"></i>
-        <input type="text" id="inputBuscaNome" class="form-control input-busca" placeholder="Buscar pelo nome do product..." oninput="filtrarCardapio()">
+        <input type="text" id="inputBuscaNome" class="form-control input-busca" placeholder="Buscar pelo nome do produto..." oninput="filtrarCardapio()">
       </div>
       <button class="btn btn-filtro-trigger" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCategorias" aria-expanded="true" id="btnFiltroCategorias">
         <i class="bi bi-funnel-fill"></i> <span>Filtros</span>
@@ -482,29 +470,27 @@ $nome = $_SESSION['nome'] ?? "Cliente";
     </div>
 
     <div class="collapse show" id="collapseCategorias">
-      <div class="categorias-wrapper">
-        <div class="categorias-container">
-          <div class="btn-categoria-box active" data-value="todos" onclick="selecionarCategoria(this)">
-            <span class="fs-4">🍱</span><span>Todos</span>
-          </div>
-          <div class="btn-categoria-box" data-value="sushi" onclick="selecionarCategoria(this)">
-            <span class="fs-4">🍣</span><span>Sushi</span>
-          </div>
-          <div class="btn-categoria-box" data-value="sashimi" onclick="selecionarCategoria(this)">
-            <span class="fs-4">🐟</span><span>Sashimi</span>
-          </div>
-          <div class="btn-categoria-box" data-value="ramen" onclick="selecionarCategoria(this)">
-            <span class="fs-4">🍜</span><span>Ramen</span>
-          </div>
-          <div class="btn-categoria-box" data-value="temaki" onclick="selecionarCategoria(this)">
-            <span class="fs-4">📐</span><span>Temaki</span>
-          </div>
-          <div class="btn-categoria-box" data-value="bebida" onclick="selecionarCategoria(this)">
-            <span class="fs-4">🥤</span><span>Bebidas</span>
-          </div>
-          <div class="btn-categoria-box" data-value="sobremesa" onclick="selecionarCategoria(this)">
-            <span class="fs-4">🍡</span><span>Sobremesas</span>
-          </div>
+      <div class="categorias-container">
+        <div class="btn-categoria-box active" data-value="todos" onclick="selecionarCategoria(this)">
+          <span class="fs-4">🍱</span><span>Todos</span>
+        </div>
+        <div class="btn-categoria-box" data-value="sushi" onclick="selecionarCategoria(this)">
+          <span class="fs-4">🍣</span><span>Sushi</span>
+        </div>
+        <div class="btn-categoria-box" data-value="sashimi" onclick="selecionarCategoria(this)">
+          <span class="fs-4">🐟</span><span>Sashimi</span>
+        </div>
+        <div class="btn-categoria-box" data-value="ramen" onclick="selecionarCategoria(this)">
+          <span class="fs-4">🍜</span><span>Ramen</span>
+        </div>
+        <div class="btn-categoria-box" data-value="temaki" onclick="selecionarCategoria(this)">
+          <span class="fs-4">📐</span><span>Temaki</span>
+        </div>
+        <div class="btn-categoria-box" data-value="bebida" onclick="selecionarCategoria(this)">
+          <span class="fs-4">🥤</span><span>Bebidas</span>
+        </div>
+        <div class="btn-categoria-box" data-value="sobremesa" onclick="selecionarCategoria(this)">
+          <span class="fs-4">🍡</span><span>Sobremesas</span>
         </div>
       </div>
     </div>
@@ -718,6 +704,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
         }
       });
 
+      // Exibe mensagem caso nenhum produto corresponda ao filtro selecionado
       if (encontrouQualquer) {
         msgVazio.classList.add('d-none');
       } else {
@@ -725,6 +712,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       }
     }
 
+    // Controla o visual do botão de filtro ativo
     const collapseCategorias = document.getElementById('collapseCategorias');
     const btnFiltro = document.getElementById('btnFiltroCategorias');
     if(collapseCategorias && btnFiltro) {
@@ -857,4 +845,44 @@ $nome = $_SESSION['nome'] ?? "Cliente";
         let subtotalEl = itemLi.querySelector('.item-subtotal');
         let novoSubtotal = novaQtd * precoNum;
         subtotalEl.innerText = "R$ " + novoSubtotal.toLocaleString('pt-br', { minimumFractionDigits: 2 });
-      let variacaoQtd = operacao === 'somar' ? 1 : -1; atualizarTotaisGerais(precoNum * variacaoQtd, variacaoQtd); } function atualizarTotaisGerais(valorVariacao, qtdVariacao) { let contador = document.querySelector('.cart-count'); if (contador) { let novaQtdTotal = (parseInt(contador.innerText) || 0) + qtdVariacao; if (novaQtdTotal <= 0) { contador.remove(); } else { contador.innerText = novaQtdTotal; } } else if (qtdVariacao > 0) { let btn = document.getElementById('btnCart'); if (btn) { let span = document.createElement('span'); span.className = 'cart-count'; span.innerText = qtdVariacao; btn.appendChild(span); } } let totalEl = document.getElementById('totalValor'); let inputTotal = document.getElementById('inputTotal'); if (totalEl && inputTotal) { let valorLimpo = inputTotal.value.replace(',', '.'); let totalAtual = parseFloat(valorLimpo) || 0; let novoTotal = totalAtual + valorVariacao; if (novoTotal < 0) novoTotal = 0; inputTotal.value = novoTotal; totalEl.innerText = "R$ " + novoTotal.toLocaleString('pt-br', { minimumFractionDigits: 2 }); } } </script> </body> </html>
+      }
+
+      let variacaoQtd = operacao === 'somar' ? 1 : -1;
+      atualizarTotaisGerais(precoNum * variacaoQtd, variacaoQtd);
+    }
+
+    function atualizarTotaisGerais(valorVariacao, qtdVariacao) {
+      let contador = document.querySelector('.cart-count');
+      if (contador) {
+        let novaQtdTotal = (parseInt(contador.innerText) || 0) + qtdVariacao;
+        if (novaQtdTotal <= 0) {
+          contador.remove();
+        } else {
+          contador.innerText = novaQtdTotal;
+        }
+      } else if (qtdVariacao > 0) {
+        let btn = document.getElementById('btnCart');
+        if (btn) {
+          let span = document.createElement('span');
+          span.className = 'cart-count';
+          span.innerText = qtdVariacao;
+          btn.appendChild(span);
+        }
+      }
+
+      let totalEl = document.getElementById('totalValor');
+      let inputTotal = document.getElementById('inputTotal');
+      
+      if (totalEl && inputTotal) {
+        let valorLimpo = inputTotal.value.replace(',', '.');
+        let totalAtual = parseFloat(valorLimpo) || 0;
+        let novoTotal = totalAtual + valorVariacao;
+        if (novoTotal < 0) novoTotal = 0;
+
+        inputTotal.value = novoTotal;
+        totalEl.innerText = "R$ " + novoTotal.toLocaleString('pt-br', { minimumFractionDigits: 2 });
+      }
+    }
+  </script>
+</body>
+</html>
