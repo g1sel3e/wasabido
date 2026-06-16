@@ -1,9 +1,15 @@
 <?php
+// Gerenciamento seguro da sessão para permitir o uso de $_SESSION sem quebras
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Inclusões estáveis baseadas no diretório atual do arquivo
 require_once __DIR__ . "/../verificacao.php";
-require "../MODEL/PagamentoModel.php";
-require "../MODEL/ContemModel.php"; // 🔥 NECESSÁRIO
-require "../DAO/PagamentoDAO.php";
-require "../DAO/ContemDAO.php";
+require_once __DIR__ . "/../MODEL/PagamentoModel.php";
+require_once __DIR__ . "/../MODEL/ContemModel.php"; 
+require_once __DIR__ . "/../DAO/PagamentoDAO.php";
+require_once __DIR__ . "/../DAO/ContemDAO.php";
 
 $pagamento = new Pagamento();
 $dao = new PagamentoDAO();
@@ -11,7 +17,7 @@ $contemDAO = new ContemDAO();
 
 $acao = $_POST['acao'] ?? "";
 $tipo = $_POST['tipo'] ?? "";
-$codPedido = $_POST['cod_pedido'] ?? $_SESSION['cod_pedido'];
+$codPedido = $_POST['cod_pedido'] ?? ($_SESSION['cod_pedido'] ?? null);
 
 // 📥 RECEBE O CÓDIGO DO ENDEREÇO E TRATA STRINGS VAZIAS COMO NULL SEGURO
 $codEnderecoRaw = $_POST['cod_endereco'] ?? '';
@@ -27,9 +33,9 @@ switch ($acao) {
         $codPagamento = $dao->inserir($pagamento);
 
         // =========================
-        // ATUALIZA PEDIDO
+        // ATUALIZA PEDIDO (Inclusão corrigida com __DIR__)
         // =========================
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "UPDATE pedido 
                 SET cod_pagamento = :cod_pagamento,
@@ -68,7 +74,7 @@ switch ($acao) {
                     $contem->setPrecoUnitario($item['preco']);
                     $contem->setSubtotal($item['quantidade'] * $item['preco']);
 
-                    $contemDAO->inserir($contem); // 🔥 CORRETO
+                    $contemDAO->inserir($contem);
                 }
                 break;
         }
@@ -89,4 +95,5 @@ switch ($acao) {
 
     default:
         echo "Ação não reconhecida";
+        break;
 }
