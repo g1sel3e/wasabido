@@ -63,7 +63,7 @@ if (!empty($acao)) {
             $endereco->setRua($rua);
             $endereco->setBairro($bairro);
             $endereco->setNum($num);
-            $endereco->Cidade($cidade);
+            $endereco->setCidade($cidade); // <--- CORRIGIDO AQUI!
             $endereco->setComplemento($complemento);
 
             $cliente->setEndereco($endereco);
