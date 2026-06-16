@@ -69,32 +69,6 @@ $nome = $_SESSION['nome'] ?? "Cliente";
     .titulo span { color: var(--accent-red); }
     .titulo p { color: #bbb; font-size: 1rem; }
 
-    /* FILTRO REFINADO */
-    .filter-container {
-      background: rgba(15, 15, 15, 0.8);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 1rem;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    }
-
-    .select-custom {
-      background-color: #000 !important;
-      color: var(--text-light) !important;
-      border: 1px solid var(--card-border) !important;
-      border-radius: 10px !important;
-      padding: 0.6rem 1rem !important;
-      font-weight: 500;
-      cursor: pointer;
-      transition: border-color 0.2s ease;
-    }
-
-    .select-custom:focus {
-      border-color: var(--accent-red) !important;
-      box-shadow: 0 0 0 0.25rem rgba(230, 0, 0, 0.25) !important;
-    }
-
     /* CARDS DE PRODUTO GOURMET */
     .card-produto {
       background: var(--card-bg);
@@ -324,7 +298,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
 
     /* NOVA BARRA DE PESQUISA E BOTÃO DE FILTRO */
     .search-wrapper {
-      max-width: 600px;
+      max-width: 700px;
       margin: 0 auto 1.5rem;
       display: flex;
       gap: 10px;
@@ -376,47 +350,72 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       color: #ff3333;
     }
 
-    /* QUADRADOS DE CATEGORIA */
+    /* ==========================================================================
+       NOVO DESIGN MODERNIZADO DE CATEGORIAS (Filtro Horizontal Responsivo)
+       ========================================================================== */
+    .categorias-wrapper {
+      max-width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none; /* Esconde barra no Firefox */
+      padding: 5px 0;
+    }
+    
+    .categorias-wrapper::-webkit-scrollbar {
+      display: none; /* Esconde barra no Chrome/Safari */
+    }
+
     .categorias-container {
-      max-width: 800px;
-      margin: 0 auto 2rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: 10px;
-      padding: 15px;
-      background: rgba(15, 15, 15, 0.5);
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+      background: rgba(15, 15, 15, 0.6);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      width: max-content;
+      margin: 0 auto;
     }
 
     .btn-categoria-box {
-      background: rgba(30, 30, 30, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(30, 30, 30, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.04);
       border-radius: 12px;
       color: #a1a1aa;
-      padding: 12px 8px;
-      font-size: 0.85rem;
+      padding: 10px 18px;
+      font-size: 0.88rem;
       font-weight: 600;
-      text-align: center;
       cursor: pointer;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.2s ease;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-categoria-box i {
+      font-size: 1.1rem;
+      color: #71717a;
+      transition: color 0.25s;
     }
 
     .btn-categoria-box:hover {
       background: rgba(255, 255, 255, 0.03);
       color: #fff;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-categoria-box:hover i {
+      color: #a1a1aa;
     }
 
     .btn-categoria-box.active {
       background: #e60000 !important;
       color: #fff !important;
       border-color: #e60000 !important;
-      box-shadow: 0 8px 20px rgba(230, 0, 0, 0.3);
+      box-shadow: 0 4px 15px rgba(230, 0, 0, 0.35);
+    }
+
+    .btn-categoria-box.active i {
+      color: #fff !important;
     }
   </style>
 </head>
@@ -435,7 +434,6 @@ $nome = $_SESSION['nome'] ?? "Cliente";
 
       <div class="collapse navbar-collapse" id="menuNav">
         <ul class="navbar-nav ms-auto align-items-center gap-2">
-
           <li class="nav-item">
             <a href="../perfil.php"
               class="nav-link d-flex align-items-center gap-2 px-3 py-2 rounded-3 text-white border border-secondary border-opacity-25"
@@ -446,15 +444,12 @@ $nome = $_SESSION['nome'] ?? "Cliente";
               <span class="small fw-semibold">Meu Perfil</span>
             </a>
           </li>
-
           <li class="nav-item d-none d-lg-block text-white-50 opacity-25 ms-2">|</li>
-
           <li class="nav-item">
             <a href="cliente.php" class="nav-link voltar-link ms-2">
               <i class="bi bi-box-arrow-left text-danger me-1"></i> Voltar
             </a>
           </li>
-
         </ul>
       </div>
     </div>
@@ -477,27 +472,47 @@ $nome = $_SESSION['nome'] ?? "Cliente";
     </div>
 
     <div class="collapse show" id="collapseCategorias">
-      <div class="categorias-container">
-        <div class="btn-categoria-box active" data-value="todos" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍱</span><span>Todos</span>
-        </div>
-        <div class="btn-categoria-box" data-value="sushi" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍣</span><span>Sushi</span>
-        </div>
-        <div class="btn-categoria-box" data-value="sashimi" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🐟</span><span>Sashimi</span>
-        </div>
-        <div class="btn-categoria-box" data-value="ramen" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍜</span><span>Ramen</span>
-        </div>
-        <div class="btn-categoria-box" data-value="temaki" onclick="selecionarCategoria(this)">
-          <span class="fs-4">📐</span><span>Temaki</span>
-        </div>
-        <div class="btn-categoria-box" data-value="bebida" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🥤</span><span>Bebidas</span>
-        </div>
-        <div class="btn-categoria-box" data-value="sobremesa" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍡</span><span>Sobremesas</span>
+      <div class="categorias-wrapper">
+        <div class="categorias-container">
+          <div class="btn-categoria-box active" data-value="todos" onclick="selecionarCategoria(this)">
+            <i class="bi bi-grid-fill"></i><span>Todos</span>
+          </div>
+          <div class="btn-categoria-box" data-value="sushi" onclick="selecionarCategoria(this)">
+            <i class="bi bi-brightness-high"></i><span>Sushi</span>
+          </div>
+          <div class="btn-categoria-box" data-value="sashimi" onclick="selecionarCategoria(this)">
+            <i class="bi bi-water"></i><span>Sashimi</span>
+          </div>
+          <div class="btn-categoria-box" data-value="ramen" onclick="selecionarCategoria(this)">
+            <i class="bi bi-cup-hot"></i><span>Ramen</span>
+          </div>
+          <div class="btn-categoria-box" data-value="temaki" onclick="selecionarCategoria(this)">
+            <i class="bi bi-triangle"></i><span>Temaki</span>
+          </div>
+          <div class="btn-categoria-box" data-value="tempura" onclick="selecionarCategoria(this)">
+            <i class="bi bi-egg-fried"></i><span>Tempurá</span>
+          </div>
+          <div class="btn-categoria-box" data-value="yakitori" onclick="selecionarCategoria(this)">
+            <i class="bi bi-fuel-pump"></i><span>Yakitori</span>
+          </div>
+          <div class="btn-categoria-box" data-value="donburi" onclick="selecionarCategoria(this)">
+            <i class="bi bi-circle-square"></i><span>Donburi</span>
+          </div>
+          <div class="btn-categoria-box" data-value="udon_soba" onclick="selecionarCategoria(this)">
+            <i class="bi bi-reception-4"></i><span>Udon / Soba</span>
+          </div>
+          <div class="btn-categoria-box" data-value="onigiri" onclick="selecionarCategoria(this)">
+            <i class="bi bi-hexagon"></i><span>Onigiri</span>
+          </div>
+          <div class="btn-categoria-box" data-value="curry" onclick="selecionarCategoria(this)">
+            <i class="bi bi-fire"></i><span>Curry Japonês</span>
+          </div>
+          <div class="btn-categoria-box" data-value="bebida" onclick="selecionarCategoria(this)">
+            <i class="bi bi-cup-straw"></i><span>Bebidas</span>
+          </div>
+          <div class="btn-categoria-box" data-value="sobremesa" onclick="selecionarCategoria(this)">
+            <i class="bi bi-cake2"></i><span>Sobremesas (Wagashi)</span>
+          </div>
         </div>
       </div>
     </div>
@@ -600,7 +615,6 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       </div>
       <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-
     <div class="offcanvas-body p-4 d-flex flex-column">
       <ul id="listaCarrinho" class="list-group list-group-flush mb-4 flex-grow-1 overflow-auto pe-2" style="max-height: 55vh;">
         <?php
@@ -638,7 +652,6 @@ $nome = $_SESSION['nome'] ?? "Cliente";
           </li>
         <?php endif; ?>
       </ul>
-
       <div class="total-container" id="containerTotal" style="<?= $total == 0 ? 'display:none;' : '' ?>">
         <span class="d-block opacity-50 small text-uppercase fw-bold mb-1">Valor Total</span>
         <h3 class="mb-4 fw-800" id="totalValor">R$ <?= number_format($total, 2, ',', '.') ?></h3>
@@ -711,7 +724,6 @@ $nome = $_SESSION['nome'] ?? "Cliente";
         }
       });
 
-      // Exibe mensagem caso nenhum produto corresponda ao filtro selecionado
       if (encontrouQualquer) {
         msgVazio.classList.add('d-none');
       } else {
@@ -719,176 +731,11 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       }
     }
 
-    // Controla o visual do botão de filtro ativo
     const collapseCategorias = document.getElementById('collapseCategorias');
     const btnFiltro = document.getElementById('btnFiltroCategorias');
     if(collapseCategorias && btnFiltro) {
       collapseCategorias.addEventListener('shown.bs.collapse', () => btnFiltro.classList.add('active'));
       collapseCategorias.addEventListener('hidden.bs.collapse', () => btnFiltro.classList.remove('active'));
-    }
-
-    function verificarCarrinhoVazio() {
-      let lista = document.getElementById('listaCarrinho');
-      if (lista && lista.children.length === 0) {
-        lista.innerHTML = `
-          <li id="mensagemVazio" class="list-group-item text-center py-5 bg-transparent border-0 text-secondary">
-            <i class="bi bi-cart-x fs-1 d-block mb-3 opacity-25"></i>Seu carrinho está vazio.
-          </li>
-        `;
-        document.getElementById('containerTotal').style.display = 'none';
-      }
-    }
-
-    function adicionarCarrinho(id, nome, preco) {
-      const precoNum = parseFloat(String(preco).replace(',', '.'));
-
-      if (isNaN(precoNum)) {
-        console.error("Preço inválido recebido.");
-        return;
-      }
-
-      fetch("../../CONTROLLER/CarrinhoController.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `acao=Adicionar&id_produto=${id}&nome=${encodeURIComponent(nome)}&quantidade=1&preco=${precoNum}`
-      })
-      .then(response => response.text())
-      .then(() => {
-        let itemExistente = document.getElementById(`item-${id}`);
-        
-        if (itemExistente) {
-          atualizarQuantidadeVisivel(id, 'somar', precoNum);
-        } else {
-          let msgVazio = document.getElementById('mensagemVazio');
-          if (msgVazio) {
-            msgVazio.remove();
-            document.getElementById('containerTotal').style.display = 'block';
-          }
-
-          let lista = document.getElementById('listaCarrinho');
-          let novoItem = document.createElement('li');
-          novoItem.className = "list-group-item d-flex justify-content-between align-items-center p-3";
-          novoItem.id = `item-${id}`;
-          novoItem.innerHTML = `
-            <div style="max-width: 55%;">
-              <span class="fw-bold text-white d-block mb-1 text-truncate" style="font-size: 0.95rem;">${nome}</span>
-              <span class="fw-bold item-subtotal" style="color: var(--accent-hover);" data-preco="${precoNum}">
-                R$ ${precoNum.toLocaleString('pt-br', { minimumFractionDigits: 2 })}
-              </span>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-              <div class="cart-controls">
-                <button class="btn-qty" onclick="atualizarQuantidade(${id}, 'subtrair', ${precoNum})">
-                  <i class="bi bi-minus text-white"></i>
-                </button>
-                <span class="qty-number" id="qty-${id}">1</span>
-                <button class="btn-qty" onclick="atualizarQuantidade(${id}, 'somar', ${precoNum})">
-                  <i class="bi bi-plus text-white"></i>
-                </button>
-              </div>
-              <button class="btn-remove-item" onclick="atualizarQuantidade(${id}, 'remover', ${precoNum})">
-                <i class="bi bi-trash3-fill"></i>
-              </button>
-            </div>
-          `;
-          lista.appendChild(novoItem);
-          atualizarTotaisGerais(precoNum, 1);
-        }
-      });
-    }
-
-    function atualizarQuantidade(id, operacao, preco) {
-      const precoNum = parseFloat(String(preco).replace(',', '.'));
-      let acaoController = "Adicionar"; 
-      let qtdVariacao = 1;
-
-      let qtyEl = document.getElementById(`qty-${id}`);
-      let qtdAtual = qtyEl ? parseInt(qtyEl.innerText) : 1;
-
-      if (operacao === 'subtrair') {
-        if (qtdAtual <= 1) {
-          operacao = 'remover'; 
-        } else {
-          acaoController = "Subtrair"; 
-          qtdVariacao = -1;
-        }
-      }
-
-      if (operacao === 'remover') {
-        acaoController = "Remover";
-        qtdVariacao = -qtdAtual; 
-      }
-
-      fetch("../../CONTROLLER/CarrinhoController.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `acao=${acaoController}&id_produto=${id}&quantidade=1`
-      })
-      .then(() => {
-        if (operacao === 'remover') {
-          let item = document.getElementById(`item-${id}`);
-          if (item) item.remove();
-          atualizarTotaisGerais(precoNum * qtdVariacao, qtdVariacao);
-          verificarCarrinhoVazio();
-        } else {
-          atualizarQuantidadeVisivel(id, operacao, precoNum);
-        }
-      });
-    }
-
-    function atualizarQuantidadeVisivel(id, operacao, preco) {
-      const precoNum = parseFloat(String(preco).replace(',', '.'));
-      let qtyEl = document.getElementById(`qty-${id}`);
-      if (!qtyEl) return;
-
-      let qtdAtual = parseInt(qtyEl.innerText) || 0;
-      let novaQtd = operacao === 'somar' ? qtdAtual + 1 : qtdAtual - 1;
-      if (novaQtd < 1) novaQtd = 1;
-      
-      qtyEl.innerText = novaQtd;
-
-      let itemLi = document.getElementById(`item-${id}`);
-      if (itemLi) {
-        let subtotalEl = itemLi.querySelector('.item-subtotal');
-        let novoSubtotal = novaQtd * precoNum;
-        subtotalEl.innerText = "R$ " + novoSubtotal.toLocaleString('pt-br', { minimumFractionDigits: 2 });
-      }
-
-      let variacaoQtd = operacao === 'somar' ? 1 : -1;
-      atualizarTotaisGerais(precoNum * variacaoQtd, variacaoQtd);
-    }
-
-    function atualizarTotaisGerais(valorVariacao, qtdVariacao) {
-      let contador = document.querySelector('.cart-count');
-      if (contador) {
-        let novaQtdTotal = (parseInt(contador.innerText) || 0) + qtdVariacao;
-        if (novaQtdTotal <= 0) {
-          contador.remove();
-        } else {
-          contador.innerText = novaQtdTotal;
-        }
-      } else if (qtdVariacao > 0) {
-        let btn = document.getElementById('btnCart');
-        if (btn) {
-          let span = document.createElement('span');
-          span.className = 'cart-count';
-          span.innerText = qtdVariacao;
-          btn.appendChild(span);
-        }
-      }
-
-      let totalEl = document.getElementById('totalValor');
-      let inputTotal = document.getElementById('inputTotal');
-      
-      if (totalEl && inputTotal) {
-        let valorLimpo = inputTotal.value.replace(',', '.');
-        let totalAtual = parseFloat(valorLimpo) || 0;
-        let novoTotal = totalAtual + valorVariacao;
-        if (novoTotal < 0) novoTotal = 0;
-
-        inputTotal.value = novoTotal;
-        totalEl.innerText = "R$ " + novoTotal.toLocaleString('pt-br', { minimumFractionDigits: 2 });
-      }
     }
   </script>
 </body>
