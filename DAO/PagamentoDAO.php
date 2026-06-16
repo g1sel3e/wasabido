@@ -7,9 +7,13 @@ class PagamentoDAO
     // =========================
     function inserir($pagamento)
     {
-        // require_once impede que o arquivo de conexão seja reinvocado se já estiver na memória
         require_once __DIR__ . "/../conexao.php";
         global $conexao;
+
+        // 🛡️ REDE DE SEGURANÇA: Se a conexão global sumiu ou veio nula, força a reinjeção local
+        if (!isset($conexao) || $conexao === null) {
+            include __DIR__ . "/../conexao.php";
+        }
 
         $sql = "INSERT INTO pagamento (tipo, status)
                 VALUES (:tipo, :status)";
@@ -29,8 +33,11 @@ class PagamentoDAO
         require_once __DIR__ . "/../conexao.php";
         global $conexao; 
 
+        if (!isset($conexao) || $conexao === null) {
+            include __DIR__ . "/../conexao.php";
+        }
+
         try {
-            // Ajuste o nome da coluna 'cod_pagamento' se no seu banco for diferente (ex: fk_pagamento)
             $sql = "UPDATE pedido 
                 SET cod_pagamento = :codPagamento, status = :novoStatus 
                 WHERE cod = :codPedido";
@@ -54,6 +61,10 @@ class PagamentoDAO
         require_once __DIR__ . "/../conexao.php";
         global $conexao;
 
+        if (!isset($conexao) || $conexao === null) {
+            include __DIR__ . "/../conexao.php";
+        }
+
         $sql = "SELECT * FROM pagamento ORDER BY cod DESC";
         $consulta = $conexao->prepare($sql);
         $consulta->execute();
@@ -68,6 +79,10 @@ class PagamentoDAO
     {
         require_once __DIR__ . "/../conexao.php";
         global $conexao;
+
+        if (!isset($conexao) || $conexao === null) {
+            include __DIR__ . "/../conexao.php";
+        }
 
         $sql = "UPDATE pagamento
                 SET status = :status
@@ -87,6 +102,10 @@ class PagamentoDAO
     {
         require_once __DIR__ . "/../conexao.php";
         global $conexao;
+
+        if (!isset($conexao) || $conexao === null) {
+            include __DIR__ . "/../conexao.php";
+        }
 
         $sql = "DELETE FROM pagamento WHERE cod = :cod";
         $consulta = $conexao->prepare($sql);
