@@ -1,3 +1,9 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$nome = $_SESSION['nome'] ?? "Cliente";
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -66,7 +72,7 @@
     .hero {
       background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.85)),
         url('https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
-      min-height: calc(100vh - 170px); /* Ajusta dinamicamente descontando topo/rodapé */
+      min-height: calc(100vh - 170px);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -85,7 +91,7 @@
       margin-bottom: 3rem;
     }
 
-    /* ESTILIZAÇÃO DOS CARDS (IGUAL AO ADMIN) */
+    /* ESTILIZAÇÃO DOS CARDS */
     .card-admin {
       background-color: #121212;
       border: 1px solid #222;
@@ -165,13 +171,6 @@
 
 <body>
 
-  <?php
-  if (session_status() === PHP_SESSION_NONE) {
-      session_start();
-  }
-  $nome = $_SESSION['nome'] ?? "Cliente";
-  ?>
-
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
       <a href="#" class="navbar-brand">
@@ -188,6 +187,7 @@
             <a href="../../CONTROLLER/LoginController.php?acao=Logout" class="nav-link text-white-50 me-2">
               <i class="bi bi-box-arrow-left me-1"></i> Sair
             </a>
+          </li>
           <li class="nav-item d-none d-lg-block text-white-50 opacity-25 me-2">|</li>
 
           <li class="nav-item">
@@ -204,8 +204,6 @@
       </div>
     </div>
   </nav>
-
-  
 
   <section class="hero">
     <div class="container">
