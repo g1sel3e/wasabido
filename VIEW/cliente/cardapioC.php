@@ -425,7 +425,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
 
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-      <a href="#" class="navbar-brand">
+      <a href="inicioE.php" class="navbar-brand">
         <img src="../../imagens/ws.png" alt="WasabiDO">
       </a>
 
@@ -435,19 +435,26 @@ $nome = $_SESSION['nome'] ?? "Cliente";
 
       <div class="collapse navbar-collapse" id="menuNav">
         <ul class="navbar-nav ms-auto align-items-center gap-2">
-          <li class="nav-item">
-            <a href="../../CONTROLLER/LoginController.php?acao=Logout" class="nav-link text-white-50 me-2">
-              <i class="bi bi-box-arrow-left me-1"></i> Sair
-            </a>
-          </li>
-          <li class="nav-item d-none d-lg-block text-white-50 opacity-25 me-2">|</li>
 
           <li class="nav-item">
-            <a href="../perfil.php" class="nav-link d-flex align-items-center gap-2 px-3 py-2 rounded-3 text-white border border-secondary border-opacity-25" style="background: rgba(255,255,255,0.03);">
-              <i class="bi bi-person-circle fs-5" style="color: #e60000;"></i>
+            <a href="../perfil.php"
+              class="nav-link d-flex align-items-center gap-2 px-3 py-2 rounded-3 text-white border border-secondary border-opacity-25"
+              style="background: rgba(255,255,255,0.03); transition: 0.2s;"
+              onmouseover="this.style.borderColor='var(--accent-red)'"
+              onmouseout="this.style.borderColor='rgba(255,255,255,0.2)'">
+              <i class="bi bi-person-circle fs-5" style="color: var(--accent-red);"></i>
               <span class="small fw-semibold">Meu Perfil</span>
             </a>
           </li>
+
+          <li class="nav-item d-none d-lg-block text-white-50 opacity-25 ms-2">|</li>
+
+          <li class="nav-item">
+            <a href="cliente.php" class="nav-link voltar-link ms-2">
+              <i class="bi bi-box-arrow-left text-danger me-1"></i> Voltar
+            </a>
+          </li>
+
         </ul>
       </div>
     </div>
