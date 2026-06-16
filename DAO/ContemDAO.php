@@ -7,7 +7,8 @@ class ContemDAO
     // ============================================================
     public function inserir($contem)
     {
-        include __DIR__ . "/../conexao.php";
+        // require_once garante o reuso limpo da conexão em loops de inserção
+        require_once __DIR__ . "/../conexao.php";
 
         try {
 
@@ -37,7 +38,7 @@ class ContemDAO
     // ============================================================
     public function listarPorPedido($cod_pedido)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT 
                     c.cod,
@@ -63,7 +64,7 @@ class ContemDAO
     // ============================================================
     public function excluir($cod)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         try {
             $sql = "DELETE FROM contem WHERE cod = :cod";
