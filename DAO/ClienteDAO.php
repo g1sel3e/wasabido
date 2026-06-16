@@ -3,7 +3,7 @@ class ClienteDAO
 {
     function inserir($cliente)
     {
-        include $_SERVER['DOCUMENT_ROOT'] . "/wasabido/conexao.php";
+        include __DIR__ . "/../conexao.php";
         try {
             // INSERE CLIENTE
             $sql = "INSERT INTO cliente (nome, email, senha, tel, cpf, rg)
