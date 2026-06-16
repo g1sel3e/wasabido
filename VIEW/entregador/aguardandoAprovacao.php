@@ -55,6 +55,29 @@ if (session_status() === PHP_SESSION_NONE) {
       Olá! Recebemos suas informações de motorista e os documentos do seu veículo. Para garantir a segurança da comunidade <strong>WasabiDO</strong>, nossa equipe de administração está validando os dados fornecidos.
     </p>
     <p class="mb-4 text-sm" style="color: #e60000; font-weight: 500;">
-      Assim que seu status mudar para aprovado, você terá acesso total à plataforma de entregas.
+      Assim que seu status mudar para aprovado, você será redirecionado automaticamente para a plataforma de entregas.
     </p>
-    <a
+    
+    <a href="../VIEW/login.php" class="btn-voltar">Voltar para o Início</a>
+  </div>
+
+  <script>
+    function checarStatusAprovacao() {
+      // Faz uma requisição assíncrona para o arquivo PHP que criamos
+      fetch('verificar_status.php')
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'Aprovado') {
+            // Mude o caminho abaixo para a tela principal do entregador
+            window.location.href = "../VIEW/entregador/principal.php"; 
+          }
+        })
+        .catch(error => console.error('Erro ao verificar status:', error));
+    }
+
+    // Executa a função a cada 5000 milissegundos (5 segundos)
+    setInterval(checarStatusAprovacao, 5000);
+  </script>
+
+</body>
+</html>
