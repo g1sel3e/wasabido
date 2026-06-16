@@ -1,31 +1,10 @@
 <?php
-// 1. CONEXÃO COM O BANCO DE DADOS
-try {
-    $pdo = new PDO("mysql:host=localhost;dbname=wasabido_a;charset=utf8", "wasabido", "2008wasabido@");
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+// 1. Inclusão dinâmica do Controller baseado na localização deste arquivo View
+require_once __DIR__ . "/../../CONTROLLER/AvaliacaoController.php"; 
 
-    // 2. CONSULTA COM LEFT JOIN NAS TRÊS TABELAS DE USUÁRIOS
-    // Buscamos os nomes de cada tabela. Ajuste o nome das tabelas/colunas se forem diferentes no seu banco.
-    $sql = "SELECT 
-                a.nota, 
-                a.comentario, 
-                a.tipo_avaliacao,
-                c.nome AS nome_cliente,
-                e.nome AS nome_entregador,
-                adm.nome AS nome_admin
-            FROM avaliacao a
-            LEFT JOIN cliente c ON a.cod_cliente = c.cod
-            LEFT JOIN entregador e ON a.cod_entregador = e.cod
-            LEFT JOIN administrador adm ON a.cod_administrador = adm.cod
-            ORDER BY a.cod DESC";
-            
-    $stmt = $pdo->query($sql);
-    $avaliacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-} catch (PDOException $e) {
-    $avaliacoes = [];
-    $erro_banco = $e->getMessage();
-}
+// 2. Executa a busca através do Controller
+$controller = new AvaliacaoController();
+$avaliacoes = $controller->listarAvaliacoesGerais();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -176,8 +155,8 @@ try {
 
       <?php if (!empty($avaliacoes)): ?>
         <?php foreach ($avaliacoes as $review): 
-            // LÓGICA PARA IDENTIFICAR QUEM AVALIOU E DEFINIR O NOME E O CARGO
-            $nomeExibido = "Usuário Anônimo";
+            // Identifica dinamicamente quem fez a postagem e define nome e cargo
+            $nomeExibido = "Membro do Sistema";
             $cargoExibido = "Membro";
 
             if (!empty($review['nome_cliente'])) {
@@ -191,10 +170,10 @@ try {
                 $cargoExibido = "Administrador";
             }
 
-            // Captura a primeira letra do nome ativo
+            // Extrai a primeira letra do nome ativo para o Avatar redondo
             $primeiraLetra = strtoupper(substr($nomeExibido, 0, 1));
             
-            // Validação do intervalo da nota
+            // Força a nota a se manter dentro do padrão numérico aceitável
             $notaReal = isset($review['nota']) ? (int)$review['nota'] : 5;
             if ($notaReal < 1) $notaReal = 1;
             if ($notaReal > 5) $notaReal = 5;
@@ -220,7 +199,7 @@ try {
                 </div>
 
                 <div class="comentario">
-                  <?= !empty($review['comentario']) ? nl2br(htmlspecialchars($review['comentario'])) : '<i>Avaliação sem comentários adicionais.</i>' ?>
+                  <?= !empty($review['comentario']) ? nl2br(htmlspecialchars($review['comentario'])) : '<i>Avaliação enviada sem comentários em texto.</i>' ?>
                 </div>
               </div>
             </div>
@@ -229,7 +208,7 @@ try {
         <?php endforeach; ?>
       <?php else: ?>
         <div class="col-12 text-center py-5">
-          <p class="text-muted">Nenhuma avaliação encontrada no momento.</p>
+          <p class="text-muted">Nenhuma avaliação encontrada no banco de dados.</p>
         </div>
       <?php endif; ?>
 
@@ -237,5 +216,4 @@ try {
   </div>
 
 </body>
-
 </html>
