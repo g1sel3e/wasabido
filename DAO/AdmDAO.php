@@ -7,7 +7,8 @@ class AdmDAO
     // ============================================================
     function inserir($adm)
     {
-        include __DIR__ . "/../conexao.php";
+        // require_once impede múltiplas conexões acidentais na mesma requisição
+        require_once __DIR__ . "/../conexao.php";
 
         try {
 
@@ -29,12 +30,13 @@ class AdmDAO
             return false;
         }
     }
+
     // ============================================================
     // BUSCAR POR ID (PERFIL)
     // ============================================================
     function buscarPorId($cod)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT email, tel FROM administrador WHERE cod = :cod";
         $consulta = $conexao->prepare($sql);
@@ -49,7 +51,7 @@ class AdmDAO
     // ============================================================
     function listar()
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT * FROM administrador ORDER BY nome";
         $consulta = $conexao->prepare($sql);
@@ -63,14 +65,16 @@ class AdmDAO
     // ============================================================
     function atualizar($adm)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
+        
         $sql = "UPDATE administrador SET nome = :nome, email = :email, senha = :senha, tel = :tel WHERE cod = :cod";
         $consulta = $conexao->prepare($sql);
         $consulta->bindValue(":cod", $adm->getCod());
         $consulta->bindValue(":nome", $adm->getNome());
         $consulta->bindValue(":email", $adm->getEmail());
         $consulta->bindValue(":senha", $adm->getSenha());
-        $consulta->bindValue(":tel", $adm->getTel()); // Ajustado de getTelefone para getTel
+        $consulta->bindValue(":tel", $adm->getTel());
+        
         return $consulta->execute();
     }
 
@@ -79,7 +83,7 @@ class AdmDAO
     // ============================================================
     function apagar($cod)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         try {
             $sql = "DELETE FROM administrador WHERE cod = :cod";
@@ -104,7 +108,7 @@ class AdmDAO
     // ============================================================
     function logar($email, $senha)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT * FROM administrador 
                 WHERE email = :email AND senha = :senha";
@@ -122,7 +126,7 @@ class AdmDAO
     // ============================================================
     function buscar($pesquisa)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT * FROM administrador 
                 WHERE nome LIKE :pesquisa";
