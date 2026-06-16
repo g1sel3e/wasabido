@@ -1,6 +1,6 @@
 <?php
-// 1. Inclusão dinâmica do Controller baseado na localização deste arquivo View
-require_once __DIR__ . "../CONTROLLER/AvaliacaoController.php"; 
+// 1. Inclusão dinâmica corrigida com a barra inicial necessária após o __DIR__
+require_once __DIR__ . "/../CONTROLLER/AvaliacaoController.php"; 
 
 // 2. Executa a busca através do Controller
 $controller = new AvaliacaoController();
@@ -170,8 +170,8 @@ $avaliacoes = $controller->listarAvaliacoesGerais();
                 $cargoExibido = "Administrador";
             }
 
-            // Extrai a primeira letra do nome ativo para o Avatar redondo
-            $primeiraLetra = strtoupper(substr($nomeExibido, 0, 1));
+            // Melhoria: mb_substr trata corretamente acentuações no UTF-8 para a letra do avatar
+            $primeiraLetra = mb_strtoupper(mb_substr($nomeExibido, 0, 1, 'UTF-8'), 'UTF-8');
             
             // Força a nota a se manter dentro do padrão numérico aceitável
             $notaReal = isset($review['nota']) ? (int)$review['nota'] : 5;
@@ -216,4 +216,5 @@ $avaliacoes = $controller->listarAvaliacoesGerais();
   </div>
 
 </body>
+
 </html>
