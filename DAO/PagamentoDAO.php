@@ -43,8 +43,11 @@ class PagamentoDAO
                 WHERE cod = :codPedido";
 
             $stmt = $conexao->prepare($sql);
-            $stmt->bindValue(":codPagamento", $codPagamento);
-            $stmt->bindValue(":novoStatus", $novoStatus);
+            
+            // 🎯 CORREÇÃO: Vinculando todos os tokens utilizados na query SQL externa
+            $stmt->bindValue(":codPagamento", $codPagamento, PDO::PARAM_INT);
+            $stmt->bindValue(":novoStatus", $novoStatus, PDO::PARAM_STR);
+            $stmt->bindValue(":codPedido", $codPedido, PDO::PARAM_INT);
 
             return $stmt->execute();
         } catch (PDOException $e) {
