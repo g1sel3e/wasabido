@@ -1,10 +1,32 @@
 <?php
-// 1. Inclusão dinâmica corrigida com a barra inicial necessária após o __DIR__
+// 1. INICIALIZA A SESSÃO ANTES DE QUALQUER COISA
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// 2. BYPASS INTELIGENTE: Se não houver ninguém logado, criamos uma sessão fantasma
+// Isso impede que o 'verificacao.php' jogue o visitante para a tela de login
+$visitante_anonimo = false;
+if (!isset($_SESSION['cod']) && !isset($_SESSION['usuario'])) {
+    $_SESSION['cod'] = 999999;          // Um ID fictício que não existe no banco
+    $_SESSION['usuario'] = 'Visitante'; // Nome fictício
+    $visitante_anonimo = true;          // Marcamos que ele é um visitante
+}
+
+// 3. Agora podemos chamar o Controller com segurança. 
+// O DAO vai rodar a verificação, ver que a sessão existe e deixar a página carregar!
 require_once __DIR__ . "/../CONTROLLER/AvaliacaoController.php"; 
 
-// 2. Executa a busca através do Controller
 $controller = new AvaliacaoController();
 $avaliacoes = $controller->listarAvaliacoesGerais();
+
+// 4. DESTRÓI A SESSÃO FANTASMA IMEDIATAMENTE
+// Limpamos a memória para que o visitante não fique logado de verdade no resto do site
+if ($visitante_anonimo) {
+    unset($_SESSION['cod']);
+    unset($_SESSION['usuario']);
+    // Se o seu verificacao.php usar outras variáveis (como $_SESSION['perfil']), destrua-as aqui também
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -155,7 +177,6 @@ $avaliacoes = $controller->listarAvaliacoesGerais();
 
       <?php if (!empty($avaliacoes)): ?>
         <?php foreach ($avaliacoes as $review): 
-            // Identifica dinamicamente quem fez a postagem e define nome e cargo
             $nomeExibido = "Membro do Sistema";
             $cargoExibido = "Membro";
 
@@ -170,10 +191,8 @@ $avaliacoes = $controller->listarAvaliacoesGerais();
                 $cargoExibido = "Administrador";
             }
 
-            // Melhoria: mb_substr trata corretamente acentuações no UTF-8 para a letra do avatar
             $primeiraLetra = mb_strtoupper(mb_substr($nomeExibido, 0, 1, 'UTF-8'), 'UTF-8');
             
-            // Força a nota a se manter dentro do padrão numérico aceitável
             $notaReal = isset($review['nota']) ? (int)$review['nota'] : 5;
             if ($notaReal < 1) $notaReal = 1;
             if ($notaReal > 5) $notaReal = 5;
@@ -216,5 +235,4 @@ $avaliacoes = $controller->listarAvaliacoesGerais();
   </div>
 
 </body>
-
 </html>
