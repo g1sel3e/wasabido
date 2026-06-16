@@ -76,5 +76,29 @@ class AvaliacaoDAO
 
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    function listarTodasComUsuarios()
+    {
+        require_once __DIR__ . "/../conexao.php";
+
+        // Usamos LEFT JOIN nas 3 tabelas de usuários para trazer o nome correto de quem avaliou
+        $sql = "SELECT 
+                    a.nota, 
+                    a.comentario, 
+                    a.tipo_avaliacao,
+                    c.nome AS nome_cliente,
+                    e.nome AS nome_entregador,
+                    adm.nome AS nome_admin
+                FROM avaliacao a
+                LEFT JOIN cliente c ON a.cod_cliente = c.cod
+                LEFT JOIN entregador e ON a.cod_entregador = e.cod
+                LEFT JOIN administrador adm ON a.cod_administrador = adm.cod
+                ORDER BY a.cod DESC";
+
+        $consulta = $conexao->prepare($sql);
+        $consulta->execute();
+
+        return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 ?>
