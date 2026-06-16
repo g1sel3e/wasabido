@@ -1,4 +1,5 @@
 <?php
+ob_start();
 $host = "mysql-wasabido.alwaysdata.net"; 
 $dbname = "wasabido_a";          
 $user = "wasabido";         
