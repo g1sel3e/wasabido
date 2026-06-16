@@ -1,7 +1,7 @@
 <?php
 // CORREÇÃO UNIVERSAL DE CAMINHOS USANDO __DIR__
 require_once __DIR__ . "/../MODEL/ClienteModel.php";
-require_once __DIR__ . "/../MODEL/EnderecoModel.php";
+require_once __DIR__ . "/../MODEL/enderecoModel.php";
 require_once __DIR__ . "/../DAO/ClienteDAO.php";
 
 // Garante que as classes existam antes de instanciá-las
