@@ -494,34 +494,61 @@ $nome = $_SESSION['nome'] ?? "Cliente";
   <div class="collapse show mt-4" id="collapseCategorias">
     <div class="categorias-scroll-wrapper">
       
-      <div class="category-pill active" data-value="todos" onclick="selecionarCategoria(this)">
-        <span class="pill-text">Todos</span>
-      </div>
-      
-      <div class="category-pill" data-value="sushi" onclick="selecionarCategoria(this)">
-        <span class="pill-text">Sushi</span>
-      </div>
-      
-      <div class="category-pill" data-value="sashimi" onclick="selecionarCategoria(this)">
-        <span class="pill-text">Sashimi</span>
-      </div>
-      
-      <div class="category-pill" data-value="ramen" onclick="selecionarCategoria(this)">
-        <span class="pill-text">Ramen</span>
-      </div>
-      
-      <div class="category-pill" data-value="temaki" onclick="selecionarCategoria(this)">
-        <span class="pill-text">Temaki</span>
-      </div>
-      
-      <div class="category-pill" data-value="bebida" onclick="selecionarCategoria(this)">
-        <span class="pill-text">Bebidas</span>
-      </div>
-      
-      <div class="category-pill" data-value="sobremesa" onclick="selecionarCategoria(this)">
-        <span class="pill-text">Sobremesas</span>
-      </div>
+      <div class="categorias-scroll-wrapper">
+  
+  <div class="category-pill active" data-value="todos" onclick="selecionarCategoria(this)">
+    <span class="pill-text">Todos</span>
+  </div>
+  
+  <div class="category-pill" data-value="sushi" onclick="selecionarCategoria(this)">
+    <span class="pill-text">Sushi</span>
+  </div>
+  
+  <div class="category-pill" data-value="sashimi" onclick="selecionarCategoria(this)">
+    <span class="pill-text">Sashimi</span>
+  </div>
+  
+  <div class="category-pill" data-value="ramen" onclick="selecionarCategoria(this)">
+    <span class="pill-text">Ramen</span>
+  </div>
+  
+  <div class="category-pill" data-value="temaki" onclick="selecionarCategoria(this)">
+    <span class="pill-text">Temaki</span>
+  </div>
 
+  <div class="category-pill" data-value="tempura" onclick="selecionarCategoria(this)">
+    <span class="pill-text">Tempurá</span>
+  </div>
+
+  <div class="category-pill" data-value="yakitori" onclick="selecionarCategoria(this)">
+    <span class="pill-text">Yakitori</span>
+  </div>
+
+  <div class="category-pill" data-value="donburi" onclick="selecionarCategoria(this)">
+    <span class="pill-text">Donburi</span>
+  </div>
+
+  <div class="category-pill" data-value="udon_soba" onclick="selecionarCategoria(this)">
+    <span class="pill-text">Udon / Soba</span>
+  </div>
+
+  <div class="category-pill" data-value="onigiri" onclick="selecionarCategoria(this)">
+    <span class="pill-text">Onigiri</span>
+  </div>
+
+  <div class="category-pill" data-value="curry" onclick="selecionarCategoria(this)">
+    <span class="pill-text">Curry Japonês</span>
+  </div>
+  
+  <div class="category-pill" data-value="bebida" onclick="selecionarCategoria(this)">
+    <span class="pill-text">Bebidas</span>
+  </div>
+  
+  <div class="category-pill" data-value="sobremesa" onclick="selecionarCategoria(this)">
+    <span class="pill-text">Sobremesas (Wagashi)</span>
+  </div>
+
+</div>
     </div>
   </div>
 </div>
