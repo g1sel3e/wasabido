@@ -208,6 +208,7 @@ class PedidoDAO
                 INNER JOIN endereco 
                     ON cliente.cod = endereco.cod_cliente
                 WHERE pedido.status = 'confirmado'
+                GROUP BY pedido.cod
                 ORDER BY pedido.data DESC, pedido.hora DESC";
 
         $consulta = $this->conexao->prepare($sql);
