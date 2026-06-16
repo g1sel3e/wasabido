@@ -32,20 +32,20 @@ switch ($acao) {
 
         $codPagamento = $dao->inserir($pagamento);
 
-        // ============================================================
-        // 🎯 SOLUÇÃO DA CONEXÃO NULA: 
-        // Em vez de fazer include manual e arriscar quebras de escopo,
-        // delegamos a atualização do pedido diretamente para o PagamentoDAO 
-        // usando o método que já criamos anteriormente!
-        // ============================================================
+        // Delegamos a atualização do status e ID do pagamento para o DAO blindado
         $dao->vincularPagamento($codPedido, $codPagamento, 'Pago');
 
-        // Se o seu banco exige atualizar o endereço especificamente neste momento,
-        // fazemos a query diretamente aqui trazendo a variável global explicitamente:
+        // ============================================================
+        // 🛡️ CORREÇÃO DEFINITIVA: ATUALIZA ENDEREÇO COM REDE DE SEGURANÇA
+        // ============================================================
         if ($codEndereco !== null) {
             require_once __DIR__ . "/../conexao.php";
-            // Força o PHP a enxergar a conexão que foi instanciada globalmente
             global $conexao; 
+            
+            // Se o escopo global falhou ou limpou a variável, força a reinjeção local
+            if (!isset($conexao) || $conexao === null) {
+                include __DIR__ . "/../conexao.php";
+            }
             
             if ($conexao !== null) {
                 $sql = "UPDATE pedido SET cod_endereco = :cod_endereco WHERE cod = :cod_pedido";
