@@ -2,7 +2,8 @@
 class LoginDAO {
 
     function logar($email, $senha) {
-        include __DIR__ . "/../conexao.php";
+        // require_once impede que o arquivo de conexão seja reinvocado se já estiver na memória
+        require_once __DIR__ . "/../conexao.php";
 
         // ================= ADMIN =================
         $sql = "SELECT * FROM administrador WHERE email = :email AND senha = :senha";
@@ -56,3 +57,4 @@ class LoginDAO {
         return false;
     }
 }
+?>
