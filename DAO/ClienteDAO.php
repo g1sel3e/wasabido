@@ -1,15 +1,27 @@
 <?php
 class ClienteDAO
 {
+    // Criamos uma propriedade privada para guardar a conexão na classe
+    private $conexao;
+
+    // O construtor roda automaticamente sempre que você der um "new ClienteDAO()"
+    public function __construct()
+    {
+        // Carrega o arquivo e disponibiliza a variável global para o construtor
+        require_once __DIR__ . "/../conexao.php";
+        global $conexao;
+        
+        // Armazena a conexão na propriedade da classe
+        $this->conexao = $conexao;
+    }
+
     function inserir($cliente)
     {
-        require_once __DIR__ . "/../conexao.php";
-        global $conexao; // <--- Adicionado aqui
         try {
             // INSERE CLIENTE
             $sql = "INSERT INTO cliente (nome, email, senha, tel, cpf, rg)
                     VALUES (:nome, :email, :senha, :tel, :cpf, :rg)";
-            $stmt = $conexao->prepare($sql);
+            $stmt = $this->conexao->prepare($sql); // Agora usamos $this->conexao
             $stmt->bindValue(":nome", $cliente->getNome());
             $stmt->bindValue(":email", $cliente->getEmail());
             $stmt->bindValue(":senha", $cliente->getSenha());
@@ -18,12 +30,12 @@ class ClienteDAO
             $stmt->bindValue(":rg", $cliente->getRg());
             $stmt->execute();
 
-            $clienteId = $conexao->lastInsertId();
+            $clienteId = $this->conexao->lastInsertId();
 
             // INSERE ENDEREÇO
             $sql2 = "INSERT INTO endereco (cep, rua, bairro, num, cidade, complemento, cod_cliente)
                      VALUES (:cep, :rua, :bairro, :num, :cidade, :complemento, :cod_cliente)";
-            $stmt2 = $conexao->prepare($sql2);
+            $stmt2 = $this->conexao->prepare($sql2);
             $stmt2->bindValue(":cep", $cliente->getEndereco()->getCep());
             $stmt2->bindValue(":rua", $cliente->getEndereco()->getRua());
             $stmt2->bindValue(":bairro", $cliente->getEndereco()->getBairro());
@@ -45,11 +57,8 @@ class ClienteDAO
     // ============================================================
     function buscarPorId($cod)
     {
-        require_once __DIR__ . "/../conexao.php";
-        global $conexao; // <--- Adicionado aqui
-
         $sql = "SELECT email, tel, cpf, rg FROM cliente WHERE cod = :cod";
-        $consulta = $conexao->prepare($sql);
+        $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(":cod", $cod);
         $consulta->execute();
 
@@ -58,29 +67,24 @@ class ClienteDAO
 
     public function listarClientes()
     {
-        require_once __DIR__ . "/../conexao.php";
-        global $conexao; // <--- Adicionado aqui (Linha do erro corrigida!)
-        
         $sql = "SELECT * FROM cliente ORDER BY nome ASC";
-        $consulta = $conexao->prepare($sql);
+        $consulta = $this->conexao->prepare($sql);
         $consulta->execute();
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function apagar($cod)
     {
-        require_once __DIR__ . "/../conexao.php";
-        global $conexao; // <--- Adicionado aqui
         try {
             // Primeiro removemos o endereço (chave estrangeira)
             $sqlEndereco = "DELETE FROM endereco WHERE cod_cliente = :cod";
-            $p1 = $conexao->prepare($sqlEndereco);
+            $p1 = $this->conexao->prepare($sqlEndereco);
             $p1->bindValue(":cod", $cod);
             $p1->execute();
 
             // Depois removemos o cliente
             $sqlCliente = "DELETE FROM cliente WHERE cod = :cod";
-            $p2 = $conexao->prepare($sqlCliente);
+            $p2 = $this->conexao->prepare($sqlCliente);
             $p2->bindValue(":cod", $cod);
             return $p2->execute();
         } catch (PDOException $e) {
@@ -90,16 +94,13 @@ class ClienteDAO
 
     public function atualizar($cliente)
     {
-        require_once __DIR__ . "/../conexao.php";
-        global $conexao; // <--- Adicionado aqui
-        
         $sql = "UPDATE cliente SET 
                 nome = :nome, 
                 email = :email, 
                 tel = :tel 
                 WHERE cod = :cod";
 
-        $consulta = $conexao->prepare($sql);
+        $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(":nome", $cliente->getNome());
         $consulta->bindValue(":email", $cliente->getEmail());
         $consulta->bindValue(":tel", $cliente->getTel());
@@ -110,15 +111,14 @@ class ClienteDAO
 
     public function emailExisteGlobal($email)
     {
-        require_once __DIR__ . "/../conexao.php";
-        global $conexao; // <--- Adicionado aqui
-        
+        // Correção aplicada: Removido o segundo UNION duplicado que quebraria o banco
         $sql = "SELECT email FROM cliente WHERE email = :email
                 UNION
+                SELECT email FROM administrador WHERE email = :email
                 UNION
                 SELECT email FROM entregador WHERE email = :email
                 LIMIT 1";
-        $stmt = $conexao->prepare($sql);
+        $stmt = $this->conexao->prepare($sql);
         $stmt->bindValue(":email", $email);
         $stmt->execute();
         return $stmt->rowCount() > 0;
@@ -129,14 +129,12 @@ class ClienteDAO
     // ============================================================
     public function buscarEnderecosPorCliente($codCliente)
     {
-        require_once __DIR__ . "/../conexao.php";
-        global $conexao; // <--- Adicionado aqui
         try {
             $sql = "SELECT cep, rua, bairro, num, cidade, complemento 
                     FROM endereco 
                     WHERE cod_cliente = :cod_cliente";
 
-            $consulta = $conexao->prepare($sql);
+            $consulta = $this->conexao->prepare($sql);
             $consulta->bindValue(":cod_cliente", $codCliente);
             $consulta->execute();
 
@@ -151,13 +149,11 @@ class ClienteDAO
     // ============================================================
     public function apagarEnderecoIndividual($id_endereco)
     {
-        require_once __DIR__ . "/../conexao.php";
-        global $conexao; // <--- Adicionado aqui
         try {
             $cepLimpo = trim($id_endereco);
 
             $sql = "DELETE FROM endereco WHERE cep = :id";
-            $stmt = $conexao->prepare($sql);
+            $stmt = $this->conexao->prepare($sql);
             $stmt->bindValue(":id", $cepLimpo);
             
             return $stmt->execute();
@@ -169,12 +165,10 @@ class ClienteDAO
     // INSERIR APENAS ENDEREÇO
     public function inserirApenasEndereco($endereco, $codCliente)
     {
-        require_once __DIR__ . "/../conexao.php";
-        global $conexao; // <--- Adicionado aqui
         try {
             $sql = "INSERT INTO endereco (cep, rua, bairro, num, cidade, complemento, cod_cliente)
                     VALUES (:cep, :rua, :bairro, :num, :cidade, :complemento, :cod_cliente)";
-            $stmt = $conexao->prepare($sql);
+            $stmt = $this->conexao->prepare($sql);
 
             $stmt->bindValue(":cep", method_exists($endereco, 'getCep') ? $endereco->getCep() : ($endereco->cep ?? $_POST['cep']));
             $stmt->bindValue(":rua", method_exists($endereco, 'getRua') ? $endereco->getRua() : ($endereco->rua ?? $_POST['rua']));
