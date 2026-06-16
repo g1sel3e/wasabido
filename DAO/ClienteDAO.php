@@ -1,18 +1,19 @@
 <?php
 class ClienteDAO
 {
-    // Criamos uma propriedade privada para guardar a conexão na classe
+    // Propriedade privada que armazenará o objeto PDO ativo
     private $conexao;
 
-    // O construtor roda automaticamente sempre que você der um "new ClienteDAO()"
+    // O construtor agora captura o retorno direto do arquivo conexao.php
     public function __construct()
     {
-        // Carrega o arquivo e disponibiliza a variável global para o construtor
-        require_once __DIR__ . "/../conexao.php";
-        global $conexao;
+        // Força a inclusão do arquivo e guarda o seu "return $conexao;"
+        $this->conexao = require __DIR__ . "/../conexao.php";
         
-        // Armazena a conexão na propriedade da classe
-        $this->conexao = $conexao;
+        // Verificação de segurança: impede que a classe rode se o banco falhar
+        if (!$this->conexao instanceof PDO) {
+            die("Erro crítico: O arquivo de conexão não retornou uma instância válida do PDO.");
+        }
     }
 
     function inserir($cliente)
@@ -21,7 +22,7 @@ class ClienteDAO
             // INSERE CLIENTE
             $sql = "INSERT INTO cliente (nome, email, senha, tel, cpf, rg)
                     VALUES (:nome, :email, :senha, :tel, :cpf, :rg)";
-            $stmt = $this->conexao->prepare($sql); // Agora usamos $this->conexao
+            $stmt = $this->conexao->prepare($sql);
             $stmt->bindValue(":nome", $cliente->getNome());
             $stmt->bindValue(":email", $cliente->getEmail());
             $stmt->bindValue(":senha", $cliente->getSenha());
@@ -111,7 +112,6 @@ class ClienteDAO
 
     public function emailExisteGlobal($email)
     {
-        // Correção aplicada: Removido o segundo UNION duplicado que quebraria o banco
         $sql = "SELECT email FROM cliente WHERE email = :email
                 UNION
                 SELECT email FROM administrador WHERE email = :email
