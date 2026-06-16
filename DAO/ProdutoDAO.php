@@ -5,7 +5,8 @@ class ProdutoDAO
     // CREATE
     function inserir($produto)
     {
-        include __DIR__ . "/../conexao.php";
+        // require_once impede que o arquivo de conexão seja reinvocado se já estiver na memória
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "INSERT INTO produto 
     (nome, preco, foto1, foto2, foto3, foto4, categoria, descricao) 
@@ -29,7 +30,7 @@ class ProdutoDAO
     // READ
     function listar()
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT * FROM produto";
         $consulta = $conexao->prepare($sql);
@@ -41,7 +42,7 @@ class ProdutoDAO
     // CORRIGIDO: Agora busca 'foto1' e joga na chave 'imagem' que a sua View espera receber
     public function listarTodos()
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         // Usamos "foto1 AS imagem" para mapear a coluna certa do seu banco
         $sql = "SELECT cod, nome, foto1 AS imagem FROM produto ORDER BY nome ASC";
@@ -55,7 +56,7 @@ class ProdutoDAO
     // UPDATE
     function atualizar($produto)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         // Adicionei categoria e descricao aqui
         $sql = "UPDATE produto SET nome = :nome, preco = :preco, categoria = :categoria, descricao = :descricao";
@@ -104,7 +105,7 @@ class ProdutoDAO
     // DELETE
     function apagar($cod)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         try {
             $sql = "DELETE FROM produto WHERE cod = :cod";
