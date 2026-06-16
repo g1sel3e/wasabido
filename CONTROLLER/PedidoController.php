@@ -4,15 +4,16 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once __DIR__ . "/../verificacao.php";
-date_default_timezone_set('America/Sao_Paulo');
-require "../MODEL/PedidoModel.php";
-require "../DAO/PedidoDAO.php";
-
-// Garante que a sessão está ativa
+// Garante que a sessão está ativa antes de qualquer processamento ou verificação
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+require_once __DIR__ . "/../verificacao.php";
+date_default_timezone_set('America/Sao_Paulo');
+
+require_once __DIR__ . "/../MODEL/PedidoModel.php";
+require_once __DIR__ . "/../DAO/PedidoDAO.php";
 
 $pedido = new Pedido();
 $dao = new PedidoDAO();
@@ -75,7 +76,7 @@ switch ($acao) {
             header("Location: ../VIEW/erro.php?msg=erro_ao_salvar_pedido");
             exit();
         }
-        break; // Adicionado break por boa prática
+        break;
 
     case "RegistrarPagamento":
         $codPedido = $_SESSION['cod_pedido'] ?? $_POST['cod_pedido'] ?? null;
@@ -124,22 +125,18 @@ switch ($acao) {
         }
         break;
 
-    // ... outros cases (Finalizar, RegistrarPagamento, AtualizarStatusPedido)
-
     case "AceitarEntrega":
         // 1. Recebe o código do pedido vindo do formulário/botão do entregador
         $codPedido = $_POST['cod_pedido'] ?? null;
 
         // 2. Resgata o código do ENTREGADOR logado na sessão
-        // (Altere 'cod_entregador' para o nome exato da chave que você usa no login dele)
         $codEntregador = $_SESSION['cod_entregador'] ?? $_SESSION['cod'] ?? null;
 
         if ($codPedido && $codEntregador) {
-            // 3. Chama o método correto do DAO que atualiza apenas o entregador!
+            // 3. Chama o método do DAO que vincula o entregador e aceita a entrega
             $sucesso = $dao->aceitarEntrega($codPedido, $codEntregador);
 
             if ($sucesso) {
-                // Redireciona de volta para a tela de entregas do entregador
                 header("Location: ../VIEW/entregador/pedidosE.php?msg=entrega_aceita");
                 exit();
             } else {
@@ -151,6 +148,7 @@ switch ($acao) {
             exit();
         }
         break;
+
     case "MudarStatusEntregador":
         $codPedido = $_POST['cod_pedido'] ?? null;
         $novoStatus = $_POST['status'] ?? null; // Receberá 'saiu para entrega' ou 'entregue'
@@ -158,13 +156,9 @@ switch ($acao) {
 
         if ($codPedido && $novoStatus && $codEntregador) {
 
-            // Certifique-se de usar o método correto no seu DAO que atualize 
-            // apenas o status baseado no id do pedido, sem exigir cod_administrador.
-            // Se o seu atualizarStatusPedido EXIGE o admin, você pode usar um método alternativo ou criar este:
             $sucesso = $dao->atualizarStatusPorEntregador($codPedido, $novoStatus, $codEntregador);
 
             if ($sucesso) {
-                // Redireciona de volta para a lista de entregas dele
                 header("Location: ../VIEW/entregador/entregas.php?msg=status_atualizado");
                 exit();
             } else {
@@ -184,7 +178,6 @@ switch ($acao) {
         if ($codPedido && $codEntregador) {
             $sucesso = $dao->atualizarStatusPorEntregador($codPedido, 'saiu para entrega', $codEntregador);
             if ($sucesso) {
-                // Ao confirmar a saída, ele vai para a tela de Minhas Entregas
                 header("Location: ../VIEW/entregador/entregas.php?msg=em_rota");
                 exit();
             }
@@ -200,7 +193,6 @@ switch ($acao) {
         if ($codPedido && $codEntregador) {
             $sucesso = $dao->atualizarStatusPorEntregador($codPedido, 'entregue', $codEntregador);
             if ($sucesso) {
-                // Ao finalizar, ele PERMANECE na tela de finalização/curso
                 header("Location: ../VIEW/entregador/entregaConcluida.php?msg=entregue_sucesso");
                 exit();
             }
