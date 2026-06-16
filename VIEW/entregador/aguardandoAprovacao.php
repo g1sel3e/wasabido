@@ -58,7 +58,7 @@ if (session_status() === PHP_SESSION_NONE) {
       Assim que seu status mudar para aprovado, você será redirecionado automaticamente para a plataforma de entregas.
     </p>
     
-    <a href="../VIEW/login.php" class="btn-voltar">Voltar para o Início</a>
+    <a href="../login.php" class="btn-voltar">Voltar para o Início</a>
   </div>
 
   <script>
@@ -69,7 +69,7 @@ if (session_status() === PHP_SESSION_NONE) {
         .then(data => {
           if (data.status === 'Aprovado') {
             // Mude o caminho abaixo para a tela principal do entregador
-            window.location.href = "../VIEW/entregador/principal.php"; 
+            window.location.href = "../VIEW/entregador/entregador.php"; 
           }
         })
         .catch(error => console.error('Erro ao verificar status:', error));
