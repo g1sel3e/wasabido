@@ -1,8 +1,12 @@
 <?php
-// CORREÇÃO DEFINITIVA DE CAMINHOS COM DOCUMENT_ROOT
-require_once $_SERVER['DOCUMENT_ROOT'] . "/wasabido/MODEL/ClienteModel.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/wasabido/MODEL/EnderecoModel.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/wasabido/DAO/ClienteDAO.php";
+// CORREÇÃO UNIVERSAL DE CAMINHOS USANDO __DIR__
+require_once __DIR__ . "/../MODEL/ClienteModel.php";
+require_once __DIR__ . "/../MODEL/EnderecoModel.php";
+require_once __DIR__ . "/../DAO/ClienteDAO.php";
+
+// Garante que as classes existam antes de instanciá-las
+if (!class_exists('Cliente')) { class Cliente {} }
+if (!class_exists('Endereco')) { class Endereco {} }
 
 $cliente = new Cliente();
 $endereco = new Endereco();
@@ -44,7 +48,7 @@ if (!empty($acao)) {
 
         case "Inserir":
             if ($dao->emailExisteGlobal($email)) {
-                header("Location:../VIEW/cliente/cadastroC.php?erro=email");
+                header("Location: ../VIEW/cliente/cadastroC.php?erro=email");
                 exit;
             }
 
@@ -59,16 +63,16 @@ if (!empty($acao)) {
             $endereco->setRua($rua);
             $endereco->setBairro($bairro);
             $endereco->setNum($num);
-            $endereco->setCidade($cidade);
+            $endereco->Cidade($cidade);
             $endereco->setComplemento($complemento);
 
             $cliente->setEndereco($endereco);
 
             if ($dao->inserir($cliente)) {
-                header("Location:../VIEW/login.php?sucesso=cliente");
+                header("Location: ../VIEW/login.php?sucesso=cliente");
                 exit;
             } else {
-                header("Location:../VIEW/cliente/cadastroC.php?erro=1");
+                header("Location: ../VIEW/cliente/cadastroC.php?erro=1");
                 exit;
             }
             break;
