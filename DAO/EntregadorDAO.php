@@ -7,7 +7,8 @@ class EntregadorDAO
     // ============================================================
     function inserir($entregador)
     {
-        include __DIR__ . "/../conexao.php";
+        // require_once impede que o arquivo de conexão seja reinvocado se já estiver na memória
+        require_once __DIR__ . "/../conexao.php";
 
         try {
 
@@ -40,7 +41,7 @@ class EntregadorDAO
     // ============================================================
     function listar()
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT * FROM entregador ORDER BY nome";
         $consulta = $conexao->prepare($sql);
@@ -54,7 +55,7 @@ class EntregadorDAO
     // ============================================================
     function buscarPorId($cod)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT email, tel, cpf, rg, veiculo, placa FROM entregador WHERE cod = :cod";
         $consulta = $conexao->prepare($sql);
@@ -66,7 +67,7 @@ class EntregadorDAO
 
     public function listarAprovados()
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT * FROM entregador WHERE status = 'aprovado'";
         $stmt = $conexao->prepare($sql);
@@ -80,7 +81,7 @@ class EntregadorDAO
     // ============================================================
     function atualizar($entregador)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "UPDATE entregador 
                 SET nome = :nome,
@@ -105,7 +106,7 @@ class EntregadorDAO
 
     function listarPendentes()
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT * FROM entregador WHERE status = 'pendente'";
         $stmt = $conexao->prepare($sql);
@@ -116,7 +117,7 @@ class EntregadorDAO
 
     function atualizarStatus($cod, $status)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "UPDATE entregador SET status = :status WHERE cod = :cod";
         $stmt = $conexao->prepare($sql);
@@ -132,7 +133,7 @@ class EntregadorDAO
     // ============================================================
     function apagar($cod)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         try {
             $sql = "DELETE FROM entregador WHERE cod = :cod";
@@ -157,7 +158,7 @@ class EntregadorDAO
     // ============================================================
     function logar($email, $senha)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT * FROM entregador 
                 WHERE email = :email AND senha = :senha";
@@ -175,7 +176,7 @@ class EntregadorDAO
     // ============================================================
     function buscar($pesquisa)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT * FROM entregador 
                 WHERE nome LIKE :pesquisa";
