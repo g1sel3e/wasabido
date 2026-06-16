@@ -63,6 +63,7 @@ class PedidoDAO
             LEFT JOIN entregador ent ON p.cod_entregador = ent.cod
             LEFT JOIN endereco e ON e.cod_cliente = :cod_cliente
             WHERE p.cod_cliente = :cod_cliente
+            GROUP BY p.cod
             ORDER BY p.data DESC, p.cod DESC";
 
         $stmt = $this->conexao->prepare($sql);
@@ -121,6 +122,7 @@ class PedidoDAO
             LEFT JOIN cliente c ON p.cod_cliente = c.cod
             LEFT JOIN endereco e ON e.cod_cliente = p.cod_cliente
             WHERE p.cod_entregador = :cod_entregador
+            GROUP BY p.cod
             ORDER BY p.data DESC, p.cod DESC";
 
         $stmt = $this->conexao->prepare($sql);
@@ -167,7 +169,7 @@ class PedidoDAO
             INNER JOIN pagamento
                 ON pedido.cod_pagamento = pagamento.cod
             WHERE pedido.status = 'Pago'
-            GROUP BY pedido.cod"; // <--- O segredo está aqui! Agrupa para não duplicar se houver múltiplos endereços
+            GROUP BY pedido.cod";
 
         $consulta = $this->conexao->prepare($sql);
         $consulta->execute();
@@ -257,6 +259,7 @@ class PedidoDAO
             INNER JOIN endereco ON cliente.cod = endereco.cod_cliente
             WHERE pedido.status = 'entrega aceita' 
               AND pedido.cod_entregador = :cod_entregador
+            GROUP BY pedido.cod
             ORDER BY pedido.data DESC";
 
         $consulta = $this->conexao->prepare($sql);
@@ -282,6 +285,7 @@ class PedidoDAO
                 INNER JOIN endereco ON cliente.cod = endereco.cod_cliente
                 WHERE pedido.status = 'saiu para entrega' 
                   AND pedido.cod_entregador = :cod_entregador
+                GROUP BY pedido.cod
                 ORDER BY pedido.data DESC, pedido.hora DESC";
 
         $consulta = $this->conexao->prepare($sql);
@@ -359,6 +363,7 @@ class PedidoDAO
             INNER JOIN endereco e ON c.cod = e.cod_cliente
             WHERE p.cod_entregador = :cod 
               AND p.status = 'entregue'
+            GROUP BY p.cod
             ORDER BY p.data_entrega DESC, p.hora_chegada DESC";
 
         $consulta = $this->conexao->prepare($sql);
@@ -395,6 +400,7 @@ class PedidoDAO
                 FROM pedido p
                 INNER JOIN cliente c ON p.cod_cliente = c.cod
                 LEFT JOIN pagamento pag ON p.cod_pagamento = pag.cod
+                GROUP BY p.cod
                 ORDER BY p.data DESC, p.hora DESC, p.cod DESC 
                 LIMIT :limite";
 
