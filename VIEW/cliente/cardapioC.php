@@ -380,28 +380,31 @@ $nome = $_SESSION['nome'] ?? "Cliente";
   color: var(--accent-hover);
 }
 
-/* CONTAINER DE CATEGORIAS (SCROLL HORIZONTAL) */
+/* CONTAINER DE CATEGORIAS (SCROLL HORIZONTAL AJUSTADO) */
 .categorias-scroll-wrapper {
   display: flex;
   gap: 12px;
   overflow-x: auto;
-  padding: 10px 5px;
-  scrollbar-width: none;
+  padding: 15px 5px;
+  white-space: nowrap; /* Impede que as pastilhas quebrem em várias linhas */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* Scroll nativo ultra suave no celular */
+  scrollbar-width: none; /* Oculta a barra no Firefox */
 }
 
 .categorias-scroll-wrapper::-webkit-scrollbar {
-  display: none;
+  display: none; /* Oculta a barra no Chrome, Safari e Edge */
 }
 
 /* AS PASTILHAS (PILLS) DE CATEGORIA */
 .category-pill {
-  flex: 0 0 auto;
+  flex: 0 0 auto; /* Impede que a pastilha esprema o texto */
   background: rgba(20, 20, 20, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 10px 24px;
   border-radius: 30px;
   cursor: pointer;
-  display: flex;
+  display: inline-flex; /* Alinhamento interno garantido */
   align-items: center;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
