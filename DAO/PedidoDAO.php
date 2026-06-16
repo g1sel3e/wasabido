@@ -368,7 +368,7 @@ class PedidoDAO
 
     // --- MÉTODOS PARA RELATÓRIOS ADMINISTRATIVOS ---
 
-    public function obtenerMetricasFaturamento()
+    public function obterMetricasFaturamento()
     {
         $sql = "SELECT 
                     SUM(valor_total) as faturamento_mes,
