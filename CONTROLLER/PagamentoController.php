@@ -32,25 +32,29 @@ switch ($acao) {
 
         $codPagamento = $dao->inserir($pagamento);
 
-        // =========================
-        // ATUALIZA PEDIDO (Inclusão corrigida com __DIR__)
-        // =========================
-        require_once __DIR__ . "/../conexao.php";
+        // ============================================================
+        // 🎯 SOLUÇÃO DA CONEXÃO NULA: 
+        // Em vez de fazer include manual e arriscar quebras de escopo,
+        // delegamos a atualização do pedido diretamente para o PagamentoDAO 
+        // usando o método que já criamos anteriormente!
+        // ============================================================
+        $dao->vincularPagamento($codPedido, $codPagamento, 'Pago');
 
-        $sql = "UPDATE pedido 
-                SET cod_pagamento = :cod_pagamento,
-                    status = 'Pago',
-                    cod_endereco = :cod_endereco
-                WHERE cod = :cod_pedido";
-
-        $consulta = $conexao->prepare($sql);
-        $consulta->bindValue(":cod_pagamento", $codPagamento, PDO::PARAM_INT);
-        $consulta->bindValue(":cod_pedido", $codPedido, PDO::PARAM_INT);
-        
-        // 🎯 Envia o ID numérico ou o tipo NULL correto para o MySQL sem dar erro 1452
-        $consulta->bindValue(":cod_endereco", $codEndereco, $codEndereco === null ? PDO::PARAM_NULL : PDO::PARAM_INT); 
-        
-        $consulta->execute();
+        // Se o seu banco exige atualizar o endereço especificamente neste momento,
+        // fazemos a query diretamente aqui trazendo a variável global explicitamente:
+        if ($codEndereco !== null) {
+            require_once __DIR__ . "/../conexao.php";
+            // Força o PHP a enxergar a conexão que foi instanciada globalmente
+            global $conexao; 
+            
+            if ($conexao !== null) {
+                $sql = "UPDATE pedido SET cod_endereco = :cod_endereco WHERE cod = :cod_pedido";
+                $consulta = $conexao->prepare($sql);
+                $consulta->bindValue(":cod_endereco", $codEndereco, PDO::PARAM_INT);
+                $consulta->bindValue(":cod_pedido", $codPedido, PDO::PARAM_INT);
+                $consulta->execute();
+            }
+        }
 
         // =========================
         // 🔥 INSERIR ITENS NA CONTEM (COM SWITCH)
@@ -97,3 +101,4 @@ switch ($acao) {
         echo "Ação não reconhecida";
         break;
 }
+?>
