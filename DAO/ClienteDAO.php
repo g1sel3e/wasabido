@@ -44,7 +44,7 @@ class ClienteDAO
     // ============================================================
     function buscarPorId($cod)
     {
-        include $_SERVER['DOCUMENT_ROOT'] . "/wasabido/conexao.php";
+        include __DIR__ . "/../conexao.php";
 
         $sql = "SELECT email, tel, cpf, rg FROM cliente WHERE cod = :cod";
         $consulta = $conexao->prepare($sql);
@@ -56,7 +56,7 @@ class ClienteDAO
 
     public function listarClientes()
     {
-        include $_SERVER['DOCUMENT_ROOT'] . "/wasabido/conexao.php";
+        include __DIR__ . "/../conexao.php";
         $sql = "SELECT * FROM cliente ORDER BY nome ASC";
         $consulta = $conexao->prepare($sql);
         $consulta->execute();
@@ -65,7 +65,7 @@ class ClienteDAO
 
     public function apagar($cod)
     {
-        include $_SERVER['DOCUMENT_ROOT'] . "/wasabido/conexao.php";
+        include __DIR__ . "/../conexao.php";
         try {
             // Primeiro removemos o endereço (chave estrangeira)
             $sqlEndereco = "DELETE FROM endereco WHERE cod_cliente = :cod";
@@ -85,7 +85,7 @@ class ClienteDAO
 
     public function atualizar($cliente)
     {
-        include $_SERVER['DOCUMENT_ROOT'] . "/wasabido/conexao.php";
+        include __DIR__ . "/../conexao.php";
         $sql = "UPDATE cliente SET 
                 nome = :nome, 
                 email = :email, 
@@ -103,7 +103,7 @@ class ClienteDAO
 
     public function emailExisteGlobal($email)
     {
-        include $_SERVER['DOCUMENT_ROOT'] . "/wasabido/conexao.php";
+        include __DIR__ . "/../conexao.php";
         $sql = "SELECT email FROM cliente WHERE email = :email
                 UNION
                 SELECT email FROM administrador WHERE email = :email
@@ -121,7 +121,7 @@ class ClienteDAO
     // ============================================================
     public function buscarEnderecosPorCliente($codCliente)
     {
-        include $_SERVER['DOCUMENT_ROOT'] . "/wasabido/conexao.php";
+        include __DIR__ . "/../conexao.php";
         try {
             $sql = "SELECT cep, rua, bairro, num, cidade, complemento 
                     FROM endereco 
@@ -142,7 +142,7 @@ class ClienteDAO
     // ============================================================
     public function apagarEnderecoIndividual($id_endereco)
     {
-        include $_SERVER['DOCUMENT_ROOT'] . "/wasabido/conexao.php";
+        include __DIR__ . "/../conexao.php";
         try {
             $cepLimpo = trim($id_endereco);
 
@@ -159,7 +159,7 @@ class ClienteDAO
     // INSERIR APENAS ENDEREÇO
     public function inserirApenasEndereco($endereco, $codCliente)
     {
-        include $_SERVER['DOCUMENT_ROOT'] . "/wasabido/conexao.php";
+        include __DIR__ . "/../conexao.php";
         try {
             $sql = "INSERT INTO endereco (cep, rua, bairro, num, cidade, complemento, cod_cliente)
                     VALUES (:cep, :rua, :bairro, :num, :cidade, :complemento, :cod_cliente)";
