@@ -1,6 +1,6 @@
 <?php
 // 1. Inclusão dinâmica do Controller baseado na localização deste arquivo View
-require_once __DIR__ . "/../../CONTROLLER/AvaliacaoController.php"; 
+require_once __DIR__ . "../CONTROLLER/AvaliacaoController.php"; 
 
 // 2. Executa a busca através do Controller
 $controller = new AvaliacaoController();
