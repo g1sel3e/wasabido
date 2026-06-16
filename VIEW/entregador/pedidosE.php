@@ -1,10 +1,10 @@
 <?php
-// 1. Primeiro verifica se está logado
+// 1. Primeiro verifica se está logado (Usando caminho relativo seguro)
 require_once __DIR__ . "/../../verificacao.php";
 
 // 2. Depois carrega as dependências de banco de dados
-require "../../DAO/PedidoDAO.php";
-require "../../DAO/ContemDAO.php";
+require_once __DIR__ . "/../../DAO/PedidoDAO.php";
+require_once __DIR__ . "/../../DAO/ContemDAO.php";
 
 // 3. Instancia as classes e busca os dados
 $pedidoDAO = new PedidoDAO();
@@ -119,7 +119,7 @@ $pedidos = $pedidoDAO->listarPedidosConfirmados();
 
         .text-secondary-custom {
             color: #bbb !important;
-            }
+        }
 
         .btn-custom-action {
             border-radius: 8px;
@@ -196,64 +196,65 @@ $pedidos = $pedidoDAO->listarPedidosConfirmados();
                     <i class="bi bi-box-seam text-secondary" style="font-size: 3rem;"></i>
                     <p class="text-secondary-custom mt-3">Nenhum pedido aguardando entrega no momento.</p>
                 </div>
-            <?php } ?>
+            <?php } else { ?>
 
-            <?php foreach ($pedidos as $p) { ?>
+                <?php foreach ($pedidos as $p) { ?>
 
-                <div class="col-md-6 col-lg-4">
-                    <div class="order-card d-flex flex-column">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="order-card d-flex flex-column">
 
-                        <div class="card-header-custom p-3">
-                            <h5 class="mb-0 fw-bold">
-                                Pedido <span style="color: #e60000;">#<?= $p['cod'] ?></span>
-                            </h5>
-                        </div>
+                            <div class="card-header-custom p-3">
+                                <h5 class="mb-0 fw-bold">
+                                    Pedido <span style="color: #e60000;">#<?= $p['cod'] ?></span>
+                                </h5>
+                            </div>
 
-                        <div class="p-3 flex-grow-1">
-                            <div class="mb-4">
-                                <div class="d-flex align-items-center mb-2">
-                                    <i class="bi bi-person-circle info-icon me-2"></i>
-                                    <span class="fw-semibold"><?= $p['nome_cliente'] ?></span>
+                            <div class="p-3 flex-grow-1">
+                                <div class="mb-4">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-person-circle info-icon me-2"></i>
+                                        <span class="fw-semibold"><?= htmlspecialchars($p['nome_cliente']) ?></span>
+                                    </div>
+
+                                    <div class="d-flex align-items-start mb-3">
+                                        <i class="bi bi-geo-alt-fill info-icon me-2 mt-1"></i>
+                                        <div>
+                                            <span class="d-block fw-bold text-white">Endereço de Entrega:</span>
+                                            <small class="text-secondary-custom">
+                                                <?= htmlspecialchars($p['rua']) ?>, <?= htmlspecialchars($p['num']) ?><br>
+                                                <?= htmlspecialchars($p['bairro']) ?>
+                                            </small>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="d-flex align-items-start mb-3">
-                                    <i class="bi bi-geo-alt-fill info-icon me-2 mt-1"></i>
-                                    <div>
-                                        <span class="d-block fw-bold text-white">Endereço de Entrega:</span>
-                                        <small class="text-secondary-custom">
-                                            <?= $p['rua'] ?>, <?= $p['num'] ?><br>
-                                            <?= $p['bairro'] ?>
-                                        </small>
+                                <div class="items-box">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold">Total a receber:</span>
+                                        <span class="fs-5 fw-bold" style="color: #28a745;">
+                                            R$ <?= number_format($p['valor_total'], 2, ',', '.') ?>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="items-box">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="fw-bold">Total a receber:</span>
-                                    <span class="fs-5 fw-bold" style="color: #28a745;">
-                                        R$ <?= number_format($p['valor_total'], 2, ',', '.') ?>
-                                    </span>
-                                </div>
+                            <div class="p-3 pt-0 mt-auto">
+                                <form method="POST" action="../../CONTROLLER/PedidoController.php">
+
+                                    <input type="hidden" name="acao" value="AceitarEntrega">
+                                    <input type="hidden" name="cod_pedido" value="<?= $p['cod'] ?>">
+
+                                    <button type="submit" class="btn btn-accept btn-custom-action w-100">
+                                        <i class="bi bi-bicycle me-2"></i> Aceitar Entrega
+                                    </button>
+
+                                </form>
                             </div>
+
                         </div>
-
-                        <div class="p-3 pt-0 mt-auto">
-                            <form method="POST" action="../../CONTROLLER/PedidoController.php">
-
-                                <input type="hidden" name="acao" value="AceitarEntrega">
-                                <input type="hidden" name="cod_pedido" value="<?= $p['cod'] ?>">
-
-                                <button type="submit" class="btn btn-accept btn-custom-action w-100">
-                                    <i class="bi bi-bicycle me-2"></i> Aceitar Entrega
-                                </button>
-
-                            </form>
-                        </div>
-
                     </div>
-                </div>
 
+                <?php } ?>
             <?php } ?>
 
         </div>
