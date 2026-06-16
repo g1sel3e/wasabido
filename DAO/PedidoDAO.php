@@ -166,7 +166,8 @@ class PedidoDAO
                 ON cliente.cod = endereco.cod_cliente
             INNER JOIN pagamento
                 ON pedido.cod_pagamento = pagamento.cod
-            WHERE pedido.status = 'Pago'";
+            WHERE pedido.status = 'Pago'
+            GROUP BY pedido.cod"; // <--- O segredo está aqui! Agrupa para não duplicar se houver múltiplos endereços
 
         $consulta = $this->conexao->prepare($sql);
         $consulta->execute();
