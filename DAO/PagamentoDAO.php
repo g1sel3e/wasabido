@@ -7,9 +7,8 @@ class PagamentoDAO
     // =========================
     function inserir($pagamento)
     {
-        include __DIR__ . "/../conexao.php";
-
-
+        // require_once impede que o arquivo de conexão seja reinvocado se já estiver na memória
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "INSERT INTO pagamento (tipo, status)
                 VALUES (:tipo, :status)";
@@ -26,7 +25,7 @@ class PagamentoDAO
 
     public function vincularPagamento($codPedido, $codPagamento, $novoStatus = 'Pago')
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         try {
             // Ajuste o nome da coluna 'cod_pagamento' se no seu banco for diferente (ex: fk_pagamento)
@@ -50,7 +49,7 @@ class PagamentoDAO
     // =========================
     function listar()
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT * FROM pagamento ORDER BY cod DESC";
         $consulta = $conexao->prepare($sql);
@@ -64,7 +63,7 @@ class PagamentoDAO
     // =========================
     function atualizarStatus($cod, $status)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "UPDATE pagamento
                 SET status = :status
@@ -82,7 +81,7 @@ class PagamentoDAO
     // =========================
     function apagar($cod)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "DELETE FROM pagamento WHERE cod = :cod";
         $consulta = $conexao->prepare($sql);
