@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/../../verificacao.php";
-require "../../DAO/PedidoDAO.php";
-require "../../DAO/ContemDAO.php";
+require_once __DIR__ . "/../../DAO/PedidoDAO.php";
+require_once __DIR__ . "/../../DAO/ContemDAO.php";
 
 $pedidoDAO = new PedidoDAO();
 $contemDAO = new ContemDAO();
@@ -129,15 +129,16 @@ $pedidos = $pedidoDAO->listarMinhasEntregas($_SESSION['cod']);
             letter-spacing: 1px;
         }
 
-        /* BOTÃO CONFIRMAR SAÍDA (Amarelo de Alerta/Atenção para processos em andamento) */
+        /* BOTÃO CONFIRMAR SAÍDA */
         .btn-status-action {
-            background-color: #e60000;
+            background-color: var(--accent-red);
             border: none;
-            color: #000;
+            color: #fff;
         }
 
         .btn-status-action:hover {
-            background-color: #e60000;
+            background-color: var(--accent-hover);
+            color: #fff;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
         }
 
@@ -214,68 +215,69 @@ $pedidos = $pedidoDAO->listarMinhasEntregas($_SESSION['cod']);
                         <i class="bi bi-plus-circle me-2"></i>Buscar Novos Pedidos
                     </a>
                 </div>
-            <?php } ?>
+            <?php } else { ?>
 
-            <?php foreach ($pedidos as $p) { ?>
+                <?php foreach ($pedidos as $p) { ?>
 
-                <div class="col-md-6 col-lg-4">
-                    <div class="order-card d-flex flex-column">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="order-card d-flex flex-column">
 
-                        <div class="card-header-custom p-3 d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0 fw-bold">
-                                Pedido <span style="color: #e60000;">#<?= $p['cod'] ?></span>
-                            </h5>
-                            <span class="badge text-uppercase p-2"
-                                style="background-color: rgba(230,0,0,0.15); color: var(--accent-red); border: 1px solid rgba(230,0,0,0.3); font-size: 0.75rem;">
-                                Aceito
-                            </span>
-                        </div>
+                            <div class="card-header-custom p-3 d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 fw-bold">
+                                    Pedido <span style="color: #e60000;">#<?= $p['cod'] ?></span>
+                                </h5>
+                                <span class="badge text-uppercase p-2"
+                                    style="background-color: rgba(230,0,0,0.15); color: var(--accent-red); border: 1px solid rgba(230,0,0,0.3); font-size: 0.75rem;">
+                                    Aceito
+                                </span>
+                            </div>
 
-                        <div class="p-3 flex-grow-1">
-                            <div class="mb-4">
-                                <div class="d-flex align-items-center mb-2">
-                                    <i class="bi bi-person-circle info-icon me-2"></i>
-                                    <span class="fw-semibold"><?= htmlspecialchars($p['nome_cliente']) ?></span>
+                            <div class="p-3 flex-grow-1">
+                                <div class="mb-4">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-person-circle info-icon me-2"></i>
+                                        <span class="fw-semibold"><?= htmlspecialchars($p['nome_cliente']) ?></span>
+                                    </div>
+
+                                    <div class="d-flex align-items-start mb-3">
+                                        <i class="bi bi-geo-alt-fill info-icon me-2 mt-1"></i>
+                                        <div>
+                                            <span class="d-block fw-bold text-white">Endereço de Destino:</span>
+                                            <small class="text-secondary-custom">
+                                                <?= htmlspecialchars($p['rua']) ?>, <?= htmlspecialchars($p['num']) ?><br>
+                                                <?= htmlspecialchars($p['bairro']) ?>
+                                            </small>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="d-flex align-items-start mb-3">
-                                    <i class="bi bi-geo-alt-fill info-icon me-2 mt-1"></i>
-                                    <div>
-                                        <span class="d-block fw-bold text-white">Endereço de Destino:</span>
-                                        <small class="text-secondary-custom">
-                                            <?= htmlspecialchars($p['rua']) ?>, <?= htmlspecialchars($p['num']) ?><br>
-                                            <?= htmlspecialchars($p['bairro']) ?>
-                                        </small>
+                                <div class="items-box">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold">Total do Pedido:</span>
+                                        <span class="fs-5 fw-bold" style="color: #28a745;">
+                                            R$ <?= number_format($p['valor_total'], 2, ',', '.') ?>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="items-box">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="fw-bold">Total do Pedido:</span>
-                                    <span class="fs-5 fw-bold" style="color: #28a745;">
-                                        R$ <?= number_format($p['valor_total'], 2, ',', '.') ?>
-                                    </span>
-                                </div>
+                            <div class="p-3 pt-0 mt-auto">
+                                <form method="POST" action="../../CONTROLLER/PedidoController.php">
+
+                                    <input type="hidden" name="acao" value="IniciarRotaEntrega">
+                                    <input type="hidden" name="cod_pedido" value="<?= $p['cod'] ?>">
+
+                                    <button type="submit" name="status" value="saiu para entrega"
+                                        class="btn btn-status-action btn-custom-action w-100">
+                                        <i class="bi bi-box-arrow-right me-2"></i> Confirmar Saída
+                                    </button>
+                                </form>
                             </div>
+
                         </div>
-
-                        <div class="p-3 pt-0 mt-auto">
-                            <form method="POST" action="../../CONTROLLER/PedidoController.php">
-
-                                <input type="hidden" name="acao" value="IniciarRotaEntrega">
-                                <input type="hidden" name="cod_pedido" value="<?= $p['cod'] ?>">
-
-                                <button type="submit" name="status" value="saiu para entrega"
-                                    class="btn btn-status-action btn-custom-action w-100">
-                                    <i class="bi bi-box-arrow-right me-2"></i> Confirmar Saída
-                                </button>
-                            </form>
-                        </div>
-
                     </div>
-                </div>
 
+                <?php } ?>
             <?php } ?>
 
         </div>
