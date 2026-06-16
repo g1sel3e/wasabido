@@ -9,6 +9,7 @@ class PagamentoDAO
     {
         // require_once impede que o arquivo de conexão seja reinvocado se já estiver na memória
         require_once __DIR__ . "/../conexao.php";
+        global $conexao;
 
         $sql = "INSERT INTO pagamento (tipo, status)
                 VALUES (:tipo, :status)";
@@ -26,6 +27,7 @@ class PagamentoDAO
     public function vincularPagamento($codPedido, $codPagamento, $novoStatus = 'Pago')
     {
         require_once __DIR__ . "/../conexao.php";
+        global $conexao; 
 
         try {
             // Ajuste o nome da coluna 'cod_pagamento' se no seu banco for diferente (ex: fk_pagamento)
@@ -50,6 +52,7 @@ class PagamentoDAO
     function listar()
     {
         require_once __DIR__ . "/../conexao.php";
+        global $conexao;
 
         $sql = "SELECT * FROM pagamento ORDER BY cod DESC";
         $consulta = $conexao->prepare($sql);
@@ -64,6 +67,7 @@ class PagamentoDAO
     function atualizarStatus($cod, $status)
     {
         require_once __DIR__ . "/../conexao.php";
+        global $conexao;
 
         $sql = "UPDATE pagamento
                 SET status = :status
@@ -82,6 +86,7 @@ class PagamentoDAO
     function apagar($cod)
     {
         require_once __DIR__ . "/../conexao.php";
+        global $conexao;
 
         $sql = "DELETE FROM pagamento WHERE cod = :cod";
         $consulta = $conexao->prepare($sql);
