@@ -6,7 +6,8 @@ class PedidoDAO
     function inserir($pedido)
     {
         try {
-            include __DIR__ . "/../conexao.php";
+            // require_once impede que o arquivo de conexão seja reinvocado se já estiver na memória
+            require_once __DIR__ . "/../conexao.php";
 
             $sql = "INSERT INTO pedido 
             (num, valor_total, status, data, hora, cod_cliente, cod_pagamento)
@@ -37,7 +38,7 @@ class PedidoDAO
 
     public function listarPorCliente($cod_cliente)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         // Ajustada a relação: LEFT JOIN entregador ent ON p.cod_entregador = ent.cod
         $sql = "SELECT 
@@ -64,11 +65,11 @@ class PedidoDAO
     }
 
     // ============================================================
-// BUSCAR TODOS OS PEDIDOS DE UM DETERMINADO CLIENTE
-// ============================================================
+    // BUSCAR TODOS OS PEDIDOS DE UM DETERMINADO CLIENTE
+    // ============================================================
     public function buscarPedidosDoCliente($codCliente)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         try {
             // Selecionando todas as colunas necessárias, incluindo 'hora'
@@ -91,7 +92,7 @@ class PedidoDAO
 
     public function listarEntregadores()
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         // Filtro adicionado: traz apenas os registros onde o status é exatamente 'aprovado'
         $sql = "SELECT cod, nome, veiculo, placa FROM entregador WHERE status = 'aprovado'";
@@ -103,7 +104,7 @@ class PedidoDAO
 
     public function listarPorEntregador($cod_entregador)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         // Seleciona os dados do pedido filtrando pelo entregador e trazendo o nome do cliente
         $sql = "SELECT 
@@ -129,9 +130,10 @@ class PedidoDAO
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
     public function atualizarPagamento($codPedido, $codPagamento, $status)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "UPDATE pedido 
             SET cod_pagamento = :cod_pagamento,
@@ -147,14 +149,9 @@ class PedidoDAO
         return $stmt->execute();
     }
 
-    // ============================================================
-// VINCULAR PAGAMENTO AO PEDIDO E ATUALIZAR STATUS
-// ============================================================
-
-
     public function listarPedidosPagos()
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT 
                 pedido.*,
@@ -184,7 +181,7 @@ class PedidoDAO
 
     public function atualizarStatusPedido($codPedido, $status, $codAdmin = null)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "UPDATE pedido 
             SET status = :status,
@@ -201,7 +198,7 @@ class PedidoDAO
 
     function listarPedidosConfirmados()
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT 
                     pedido.*,
@@ -229,7 +226,7 @@ class PedidoDAO
 
     public function aceitarEntrega($codPedido, $codEntregador)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "UPDATE pedido 
             SET status = 'entrega aceita',
@@ -246,7 +243,8 @@ class PedidoDAO
 
     public function atualizarStatusPorEntregador($codPedido, $novoStatus, $codEntregador)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
+        
         $sql = "UPDATE pedido SET status = :status WHERE cod = :cod AND cod_entregador = :cod_entregador";
         $consulta = $conexao->prepare($sql);
         $consulta->bindValue(":status", $novoStatus);
@@ -257,7 +255,7 @@ class PedidoDAO
 
     public function listarMinhasEntregas($codEntregador)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT 
                 pedido.*,
@@ -283,7 +281,7 @@ class PedidoDAO
 
     public function listarMinhasEntregasEmCurso($codEntregador)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "SELECT 
                     pedido.*,
@@ -312,7 +310,7 @@ class PedidoDAO
 
     public function confirmarSaidaParaEntrega($codPedido)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         date_default_timezone_set('America/Sao_Paulo');
         $dataAtual = date('Y-m-d');
@@ -334,7 +332,7 @@ class PedidoDAO
 
     public function finalizarEntregaPedido($codPedido)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         date_default_timezone_set('America/Sao_Paulo');
         $horaAtual = date('H:i:s');
@@ -353,7 +351,7 @@ class PedidoDAO
 
     public function mudarStatusApenas($codPedido, $status)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         $sql = "UPDATE pedido SET status = :status WHERE cod = :cod";
 
@@ -363,9 +361,10 @@ class PedidoDAO
 
         return $consulta->execute();
     }
+    
     public function listarHistoricoEntregas($codEntregador)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         // O SQL busca os dados do pedido e o endereço vinculado ao cliente do pedido
         $sql = "SELECT 
@@ -397,7 +396,7 @@ class PedidoDAO
 
     public function obterMetricasFaturamento()
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         // Soma o faturamento e conta os pedidos realizados no mês e ano atual
         $sql = "SELECT 
@@ -414,7 +413,7 @@ class PedidoDAO
 
     public function listarVendasRecentes($limite = 6)
     {
-        include __DIR__ . "/../conexao.php";
+        require_once __DIR__ . "/../conexao.php";
 
         // Busca os últimos pedidos trazendo o nome do cliente e a forma de pagamento correspondente
         $sql = "SELECT 
