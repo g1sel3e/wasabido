@@ -3,6 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Inclusão segura baseada no diretório do arquivo atual
 require_once __DIR__ . "/../DAO/AvaliacaoDAO.php";
 
 $action = $_GET['action'] ?? '';
