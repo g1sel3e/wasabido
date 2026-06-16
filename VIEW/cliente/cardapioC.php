@@ -473,18 +473,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
     <p>Olá, <strong><?= htmlspecialchars($nome) ?></strong>! Selecione as melhores peças da culinária japonesa.</p>
   </div>
 
-  <div class="container mb-4">
-    <div class="search-wrapper">
-      <div class="search-input-group">
-        <i class="bi bi-search"></i>
-        <input type="text" id="inputBuscaNome" class="form-control input-busca" placeholder="Buscar pelo nome do produto..." oninput="filtrarCardapio()">
-      </div>
-      <button class="btn btn-filtro-trigger" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCategorias" aria-expanded="true" id="btnFiltroCategorias">
-        <i class="bi bi-funnel-fill"></i> <span>Filtros</span>
-      </button>
-    </div>
-
-    <div class="container mb-5">
+ <div class="container mb-5">
   <div class="row g-3 justify-content-center">
     
     <div class="col-12 col-md-8 col-lg-6">
