@@ -5,7 +5,8 @@ class AvaliacaoDAO
 {
     function salvarAvaliacao($dados)
     {
-        include __DIR__ . "/../conexao.php";
+        // require_once impede que o arquivo de conexão seja reinvocado se já estiver na memória
+        require_once __DIR__ . "/../conexao.php";
 
         // Adicionado 'cod_administrador' e ':cod_administrador' na Query
         $sql = "INSERT INTO avaliacao 
@@ -53,27 +54,27 @@ class AvaliacaoDAO
     }
 
     function listarAvaliacoesEntregador($cod_entregador)
-{
-    include __DIR__ . "/../conexao.php";
+    {
+        require_once __DIR__ . "/../conexao.php";
 
-    // COALESCE escolhe o primeiro nome que não for nulo (Cliente ou ADM)
-    // Fizemos LEFT JOIN com as duas tabelas para não sumir com avaliações se uma delas estiver vazia
-    $sql = "SELECT a.*, 
-                   COALESCE(c.nome, adm.nome, 'Sistema') AS nome_cliente, 
-                   a.cod_pedido AS num_pedido, 
-                   a.data AS data_avaliacao 
-            FROM avaliacao a
-            LEFT JOIN cliente c ON a.cod_cliente = c.cod
-            LEFT JOIN administrador adm ON a.cod_administrador = adm.cod
-            WHERE a.cod_entregador = :cod_entregador 
-              AND a.tipo_avaliacao = 'entregador' 
-            ORDER BY a.data DESC, a.hora DESC";
+        // COALESCE escolhe o primeiro nome que não for nulo (Cliente ou ADM)
+        // Fizemos LEFT JOIN com as duas tabelas para não sumir com avaliações se uma delas estiver vazia
+        $sql = "SELECT a.*, 
+                       COALESCE(c.nome, adm.nome, 'Sistema') AS nome_cliente, 
+                       a.cod_pedido AS num_pedido, 
+                       a.data AS data_avaliacao 
+                FROM avaliacao a
+                LEFT JOIN cliente c ON a.cod_cliente = c.cod
+                LEFT JOIN administrador adm ON a.cod_administrador = adm.cod
+                WHERE a.cod_entregador = :cod_entregador 
+                  AND a.tipo_avaliacao = 'entregador' 
+                ORDER BY a.data DESC, a.hora DESC";
 
-    $consulta = $conexao->prepare($sql);
-    $consulta->bindValue(":cod_entregador", $cod_entregador, PDO::PARAM_INT);
-    $consulta->execute();
+        $consulta = $conexao->prepare($sql);
+        $consulta->bindValue(":cod_entregador", $cod_entregador, PDO::PARAM_INT);
+        $consulta->execute();
 
-    return $consulta->fetchAll(PDO::FETCH_ASSOC);
-}
+        return $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 ?>
