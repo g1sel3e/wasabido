@@ -3,8 +3,8 @@ class ClienteDAO
 {
     function inserir($cliente)
     {
-        // require_once impede que o arquivo de conexão seja reinvocado se já estiver na memória
         require_once __DIR__ . "/../conexao.php";
+        global $conexao; // <--- Adicionado aqui
         try {
             // INSERE CLIENTE
             $sql = "INSERT INTO cliente (nome, email, senha, tel, cpf, rg)
@@ -46,6 +46,7 @@ class ClienteDAO
     function buscarPorId($cod)
     {
         require_once __DIR__ . "/../conexao.php";
+        global $conexao; // <--- Adicionado aqui
 
         $sql = "SELECT email, tel, cpf, rg FROM cliente WHERE cod = :cod";
         $consulta = $conexao->prepare($sql);
@@ -58,6 +59,7 @@ class ClienteDAO
     public function listarClientes()
     {
         require_once __DIR__ . "/../conexao.php";
+        global $conexao; // <--- Adicionado aqui (Linha do erro corrigida!)
         
         $sql = "SELECT * FROM cliente ORDER BY nome ASC";
         $consulta = $conexao->prepare($sql);
@@ -68,6 +70,7 @@ class ClienteDAO
     public function apagar($cod)
     {
         require_once __DIR__ . "/../conexao.php";
+        global $conexao; // <--- Adicionado aqui
         try {
             // Primeiro removemos o endereço (chave estrangeira)
             $sqlEndereco = "DELETE FROM endereco WHERE cod_cliente = :cod";
@@ -88,6 +91,7 @@ class ClienteDAO
     public function atualizar($cliente)
     {
         require_once __DIR__ . "/../conexao.php";
+        global $conexao; // <--- Adicionado aqui
         
         $sql = "UPDATE cliente SET 
                 nome = :nome, 
@@ -107,10 +111,10 @@ class ClienteDAO
     public function emailExisteGlobal($email)
     {
         require_once __DIR__ . "/../conexao.php";
+        global $conexao; // <--- Adicionado aqui
         
         $sql = "SELECT email FROM cliente WHERE email = :email
                 UNION
-                SELECT email FROM administrador WHERE email = :email
                 UNION
                 SELECT email FROM entregador WHERE email = :email
                 LIMIT 1";
@@ -126,6 +130,7 @@ class ClienteDAO
     public function buscarEnderecosPorCliente($codCliente)
     {
         require_once __DIR__ . "/../conexao.php";
+        global $conexao; // <--- Adicionado aqui
         try {
             $sql = "SELECT cep, rua, bairro, num, cidade, complemento 
                     FROM endereco 
@@ -147,6 +152,7 @@ class ClienteDAO
     public function apagarEnderecoIndividual($id_endereco)
     {
         require_once __DIR__ . "/../conexao.php";
+        global $conexao; // <--- Adicionado aqui
         try {
             $cepLimpo = trim($id_endereco);
 
@@ -164,6 +170,7 @@ class ClienteDAO
     public function inserirApenasEndereco($endereco, $codCliente)
     {
         require_once __DIR__ . "/../conexao.php";
+        global $conexao; // <--- Adicionado aqui
         try {
             $sql = "INSERT INTO endereco (cep, rua, bairro, num, cidade, complemento, cod_cliente)
                     VALUES (:cep, :rua, :bairro, :num, :cidade, :complemento, :cod_cliente)";
