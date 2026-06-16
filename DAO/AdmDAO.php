@@ -1,22 +1,32 @@
 <?php
 class AdmDAO
 {
+    // Propriedade privada que armazenará o objeto PDO ativo
+    private $conexao;
+
+    // O construtor captura o retorno direto do arquivo conexao.php
+    public function __construct()
+    {
+        // Força a inclusão do arquivo e guarda o seu "return $conexao;"
+        $this->conexao = require __DIR__ . "/../conexao.php";
+        
+        // Verificação de segurança: impede que a classe rode se o banco falhar
+        if (!$this->conexao instanceof PDO) {
+            die("Erro crítico: O arquivo de conexão não retornou uma instância válida do PDO no AdmDAO.");
+        }
+    }
 
     // ============================================================
     // CREATE - INSERIR
     // ============================================================
     function inserir($adm)
     {
-        // require_once impede múltiplas conexões acidentais na mesma requisição
-        require_once __DIR__ . "/../conexao.php";
-
         try {
-
             $sql = "INSERT INTO administrador 
             (nome, email, senha, tel)
             VALUES (:nome, :email, :senha, :tel)";
 
-            $consulta = $conexao->prepare($sql);
+            $consulta = $this->conexao->prepare($sql);
 
             $consulta->bindValue(":nome", $adm->getNome());
             $consulta->bindValue(":email", $adm->getEmail());
@@ -36,10 +46,8 @@ class AdmDAO
     // ============================================================
     function buscarPorId($cod)
     {
-        require_once __DIR__ . "/../conexao.php";
-
         $sql = "SELECT email, tel FROM administrador WHERE cod = :cod";
-        $consulta = $conexao->prepare($sql);
+        $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(":cod", $cod);
         $consulta->execute();
 
@@ -51,10 +59,8 @@ class AdmDAO
     // ============================================================
     function listar()
     {
-        require_once __DIR__ . "/../conexao.php";
-
         $sql = "SELECT * FROM administrador ORDER BY nome";
-        $consulta = $conexao->prepare($sql);
+        $consulta = $this->conexao->prepare($sql);
         $consulta->execute();
 
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -65,10 +71,8 @@ class AdmDAO
     // ============================================================
     function atualizar($adm)
     {
-        require_once __DIR__ . "/../conexao.php";
-        
         $sql = "UPDATE administrador SET nome = :nome, email = :email, senha = :senha, tel = :tel WHERE cod = :cod";
-        $consulta = $conexao->prepare($sql);
+        $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(":cod", $adm->getCod());
         $consulta->bindValue(":nome", $adm->getNome());
         $consulta->bindValue(":email", $adm->getEmail());
@@ -83,11 +87,9 @@ class AdmDAO
     // ============================================================
     function apagar($cod)
     {
-        require_once __DIR__ . "/../conexao.php";
-
         try {
             $sql = "DELETE FROM administrador WHERE cod = :cod";
-            $consulta = $conexao->prepare($sql);
+            $consulta = $this->conexao->prepare($sql);
             $consulta->bindValue(":cod", $cod);
             $consulta->execute();
 
@@ -108,12 +110,10 @@ class AdmDAO
     // ============================================================
     function logar($email, $senha)
     {
-        require_once __DIR__ . "/../conexao.php";
-
         $sql = "SELECT * FROM administrador 
                 WHERE email = :email AND senha = :senha";
 
-        $consulta = $conexao->prepare($sql);
+        $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(":email", $email);
         $consulta->bindValue(":senha", $senha);
         $consulta->execute();
@@ -126,12 +126,10 @@ class AdmDAO
     // ============================================================
     function buscar($pesquisa)
     {
-        require_once __DIR__ . "/../conexao.php";
-
         $sql = "SELECT * FROM administrador 
                 WHERE nome LIKE :pesquisa";
 
-        $consulta = $conexao->prepare($sql);
+        $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(":pesquisa", "%" . $pesquisa . "%");
         $consulta->execute();
 
