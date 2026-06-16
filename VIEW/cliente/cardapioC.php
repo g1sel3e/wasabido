@@ -322,102 +322,117 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
 
-    /* NOVA BARRA DE PESQUISA E BOTÃO DE FILTRO */
-    .search-wrapper {
-      max-width: 600px;
-      margin: 0 auto 1.5rem;
-      display: flex;
-      gap: 10px;
-    }
+   /* NOVA BARRA DE BUSCA */
+.search-box-gourmet {
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  padding: 4px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+}
 
-    .search-input-group {
-      position: relative;
-      flex-grow: 1;
-    }
+.search-box-gourmet:focus-within {
+  border-color: var(--accent-red);
+  background: rgba(230, 0, 0, 0.02);
+  box-shadow: 0 0 15px rgba(230, 0, 0, 0.2);
+}
 
-    .search-input-group i {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #a1a1aa;
-      font-size: 1.1rem;
-    }
+.search-icon {
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  margin-left: 20px;
+  transition: color 0.3s ease;
+}
 
-    .input-busca {
-      background-color: rgba(20, 20, 20, 0.8) !important;
-      border: 1px solid rgba(255, 255, 255, 0.05) !important;
-      color: #fff !important;
-      padding: 0.75rem 1rem 0.75rem 2.8rem !important;
-      border-radius: 14px !important;
-      font-weight: 500;
-    }
+.search-box-gourmet:focus-within .search-icon {
+  color: var(--accent-hover);
+}
 
-    .input-busca:focus {
-      border-color: #e60000 !important;
-      box-shadow: 0 0 0 3px rgba(230, 0, 0, 0.15) !important;
-    }
+.input-gourmet {
+  background: transparent !important;
+  border: none !important;
+  color: #fff !important;
+  padding: 12px 20px 12px 12px !important;
+  width: 100%;
+  font-size: 1rem;
+  outline: none;
+}
 
-    .btn-filtro-trigger {
-      background-color: rgba(20, 20, 20, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      color: #fff;
-      border-radius: 14px;
-      padding: 0 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-    }
+.input-gourmet::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
 
-    .btn-filtro-trigger.active, .btn-filtro-trigger:hover {
-      border-color: #e60000;
-      background-color: rgba(230, 0, 0, 0.05);
-      color: #ff3333;
-    }
+/* BOTÃO TOGGLE CATEGORIAS */
+.btn-toggle-categorias {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+.btn-toggle-categorias:hover, .btn-toggle-categorias.active {
+  color: var(--accent-hover);
+}
 
-    /* QUADRADOS DE CATEGORIA */
-    .categorias-container {
-      max-width: 800px;
-      margin: 0 auto 2rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: 10px;
-      padding: 15px;
-      background: rgba(15, 15, 15, 0.5);
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
+/* CONTAINER DE CATEGORIAS (SCROLL HORIZONTAL) */
+.categorias-scroll-wrapper {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 10px 5px;
+  scrollbar-width: none;
+}
 
-    .btn-categoria-box {
-      background: rgba(30, 30, 30, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      color: #a1a1aa;
-      padding: 12px 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-align: center;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-    }
+.categorias-scroll-wrapper::-webkit-scrollbar {
+  display: none;
+}
 
-    .btn-categoria-box:hover {
-      background: rgba(255, 255, 255, 0.03);
-      color: #fff;
-    }
+/* AS PASTILHAS (PILLS) DE CATEGORIA */
+.category-pill {
+  flex: 0 0 auto;
+  background: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 24px;
+  border-radius: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-    .btn-categoria-box.active {
-      background: #e60000 !important;
-      color: #fff !important;
-      border-color: #e60000 !important;
-      box-shadow: 0 8px 20px rgba(230, 0, 0, 0.3);
-    }
+.category-pill .pill-text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+/* Efeito Hover */
+.category-pill:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.category-pill:hover .pill-text {
+  color: #fff;
+}
+
+/* Estado Ativo (Selecionado) */
+.category-pill.active {
+  background: var(--accent-red) !important;
+  border-color: var(--accent-red) !important;
+  box-shadow: 0 6px 20px rgba(230, 0, 0, 0.3);
+}
+
+.category-pill.active .pill-text {
+  color: #fff !important;
+}
   </style>
 </head>
 
@@ -469,32 +484,58 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       </button>
     </div>
 
-    <div class="collapse show" id="collapseCategorias">
-      <div class="categorias-container">
-        <div class="btn-categoria-box active" data-value="todos" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍱</span><span>Todos</span>
-        </div>
-        <div class="btn-categoria-box" data-value="sushi" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍣</span><span>Sushi</span>
-        </div>
-        <div class="btn-categoria-box" data-value="sashimi" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🐟</span><span>Sashimi</span>
-        </div>
-        <div class="btn-categoria-box" data-value="ramen" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍜</span><span>Ramen</span>
-        </div>
-        <div class="btn-categoria-box" data-value="temaki" onclick="selecionarCategoria(this)">
-          <span class="fs-4">📐</span><span>Temaki</span>
-        </div>
-        <div class="btn-categoria-box" data-value="bebida" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🥤</span><span>Bebidas</span>
-        </div>
-        <div class="btn-categoria-box" data-value="sobremesa" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍡</span><span>Sobremesas</span>
-        </div>
+    <div class="container mb-5">
+  <div class="row g-3 justify-content-center">
+    
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="search-box-gourmet">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" id="inputBuscaNome" class="input-gourmet" placeholder="O que você deseja saborear hoje?..." oninput="filtrarCardapio()">
       </div>
     </div>
+
+    <div class="col-12 text-center mt-3">
+      <button class="btn-toggle-categorias" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCategorias" aria-expanded="true" id="btnFiltroCategorias">
+        <i class="bi bi-sliders2 me-2"></i> Filtrar por Categoria
+      </button>
+    </div>
+
   </div>
+
+  <div class="collapse show mt-4" id="collapseCategorias">
+    <div class="categorias-scroll-wrapper">
+      
+      <div class="category-pill active" data-value="todos" onclick="selecionarCategoria(this)">
+        <span class="pill-text">Todos</span>
+      </div>
+      
+      <div class="category-pill" data-value="sushi" onclick="selecionarCategoria(this)">
+        <span class="pill-text">Sushi</span>
+      </div>
+      
+      <div class="category-pill" data-value="sashimi" onclick="selecionarCategoria(this)">
+        <span class="pill-text">Sashimi</span>
+      </div>
+      
+      <div class="category-pill" data-value="ramen" onclick="selecionarCategoria(this)">
+        <span class="pill-text">Ramen</span>
+      </div>
+      
+      <div class="category-pill" data-value="temaki" onclick="selecionarCategoria(this)">
+        <span class="pill-text">Temaki</span>
+      </div>
+      
+      <div class="category-pill" data-value="bebida" onclick="selecionarCategoria(this)">
+        <span class="pill-text">Bebidas</span>
+      </div>
+      
+      <div class="category-pill" data-value="sobremesa" onclick="selecionarCategoria(this)">
+        <span class="pill-text">Sobremesas</span>
+      </div>
+
+    </div>
+  </div>
+</div>
 
   <main class="container pb-5">
     <div class="row g-4" id="gridProdutos">
