@@ -10,7 +10,7 @@ if (!isset($_SESSION['cod'])) {
 $idClienteLogado = $_SESSION['cod'];
 
 // Busca direta dos endereços na raiz do projeto
-include $_SERVER['DOCUMENT_ROOT'] . "/wasabido/conexao.php";
+include __DIR__ . "/../../conexao.php";
 
 $sqlEnderecos = "SELECT cod, cep, rua, bairro, num, cidade, complemento FROM endereco WHERE cod_cliente = :cod_cliente";
 $stmtEnderecos = $conexao->prepare($sqlEnderecos);
