@@ -69,31 +69,132 @@ $nome = $_SESSION['nome'] ?? "Cliente";
     .titulo span { color: var(--accent-red); }
     .titulo p { color: #bbb; font-size: 1rem; }
 
-    /* FILTRO REFINADO */
-    .filter-container {
-      background: rgba(15, 15, 15, 0.8);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 1rem;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    /* FILTRO DE BUSCA AJUSTADO GOURMET */
+    .search-box-gourmet {
+      position: relative;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 50px;
+      padding: 4px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
     }
 
+    .search-box-gourmet:focus-within {
+      border-color: var(--accent-red);
+      background: rgba(230, 0, 0, 0.02);
+      box-shadow: 0 0 15px rgba(230, 0, 0, 0.2);
+    }
+
+    .search-icon {
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      margin-left: 20px;
+      transition: color 0.3s ease;
+    }
+
+    .search-box-gourmet:focus-within .search-icon {
+      color: var(--accent-hover);
+    }
+
+    .input-gourmet {
+      background: transparent !important;
+      border: none !important;
+      color: #fff !important;
+      padding: 12px 20px 12px 12px !important;
+      width: 100%;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .input-gourmet::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* SELETOR DE PREÇO GOURMET */
     .select-custom {
-      background-color: #000 !important;
+      background-color: #111 !important;
       color: var(--text-light) !important;
       border: 1px solid var(--card-border) !important;
-      border-radius: 10px !important;
-      padding: 0.6rem 1rem !important;
-      font-weight: 500;
+      border-radius: 12px !important;
+      padding: 0.5rem 2rem 0.5rem 1rem !important;
+      font-weight: 600;
+      font-size: 0.85rem;
       cursor: pointer;
-      transition: border-color 0.2s ease;
+      transition: all 0.2s ease;
     }
 
     .select-custom:focus {
       border-color: var(--accent-red) !important;
-      box-shadow: 0 0 0 0.25rem rgba(230, 0, 0, 0.25) !important;
+      box-shadow: 0 0 0 0.25rem rgba(230, 0, 0, 0.20) !important;
     }
+
+    /* BOTÃO TOGGLE CATEGORIAS */
+    .btn-toggle-categorias {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.2s ease;
+    }
+    .btn-toggle-categorias:hover, .btn-toggle-categorias.active {
+      color: var(--accent-hover);
+    }
+
+    /* CONTAINER DE CATEGORIAS (SCROLL HORIZONTAL) */
+    .categorias-scroll-wrapper {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 15px 5px;
+      white-space: nowrap;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .categorias-scroll-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* PASTILHAS DE CATEGORIA */
+    .category-pill {
+      flex: 0 0 auto;
+      background: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 24px;
+      border-radius: 30px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .category-pill .pill-text {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .category-pill:hover {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .category-pill:hover .pill-text { color: #fff; }
+
+    .category-pill.active {
+      background: var(--accent-red) !important;
+      border-color: var(--accent-red) !important;
+      box-shadow: 0 6px 20px rgba(230, 0, 0, 0.3);
+    }
+
+    .category-pill.active .pill-text { color: #fff !important; }
 
     /* CARDS DE PRODUTO GOURMET */
     .card-produto {
@@ -187,7 +288,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
     }
     .carousel-indicators .active { background-color: var(--accent-red); width: 40px; }
 
-    /* BARRA LATERAL (OFFCANVAS) REESTILIZADA */
+    /* BARRA LATERAL (OFFCANVAS) */
     .offcanvas-custom {
       background-color: #0a0a0a !important;
       border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -202,7 +303,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       padding: 15px !important;
     }
 
-    /* CONTROLES DE QUANTIDADE INTERNOS DO CARRINHO */
+    /* CONTROLES DE QUANTIDADE */
     .cart-controls {
       display: flex;
       align-items: center;
@@ -224,13 +325,9 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       border-radius: 8px;
       transition: background 0.2s;
     }
-    .btn-qty:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
-    .btn-qty i {
-      color: #fff !important;
-      font-weight: 800;
-    }
+    .btn-qty:hover { background: rgba(255, 255, 255, 0.15); }
+    .btn-qty i { color: #fff !important; font-weight: 800; }
+    
     .qty-number {
       min-width: 25px;
       text-align: center;
@@ -246,9 +343,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       font-size: 1.1rem;
       transition: color 0.2s;
     }
-    .btn-remove-item:hover {
-      color: #ff6b6b;
-    }
+    .btn-remove-item:hover { color: #ff6b6b; }
 
     .total-container {
       background: #000;
@@ -274,7 +369,6 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       padding: 12px;
       transition: all 0.2s ease;
     }
-
     .btn-finalizar:hover {
       background: var(--accent-hover);
       color: #fff;
@@ -302,7 +396,6 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       cursor: pointer;
       transition: transform 0.2s ease;
     }
-
     #btnCart:hover { transform: scale(1.05); background: var(--accent-hover); }
 
     .cart-count {
@@ -321,121 +414,6 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       justify-content: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
-
-   /* NOVA BARRA DE BUSCA */
-.search-box-gourmet {
-  position: relative;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 50px;
-  padding: 4px;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-}
-
-.search-box-gourmet:focus-within {
-  border-color: var(--accent-red);
-  background: rgba(230, 0, 0, 0.02);
-  box-shadow: 0 0 15px rgba(230, 0, 0, 0.2);
-}
-
-.search-icon {
-  color: var(--text-muted);
-  font-size: 1.2rem;
-  margin-left: 20px;
-  transition: color 0.3s ease;
-}
-
-.search-box-gourmet:focus-within .search-icon {
-  color: var(--accent-hover);
-}
-
-.input-gourmet {
-  background: transparent !important;
-  border: none !important;
-  color: #fff !important;
-  padding: 12px 20px 12px 12px !important;
-  width: 100%;
-  font-size: 1rem;
-  outline: none;
-}
-
-.input-gourmet::placeholder {
-  color: rgba(255, 255, 255, 0.3);
-}
-
-/* BOTÃO TOGGLE CATEGORIAS */
-.btn-toggle-categorias {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  transition: color 0.2s ease;
-}
-.btn-toggle-categorias:hover, .btn-toggle-categorias.active {
-  color: var(--accent-hover);
-}
-
-/* CONTAINER DE CATEGORIAS (SCROLL HORIZONTAL AJUSTADO) */
-.categorias-scroll-wrapper {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding: 15px 5px;
-  white-space: nowrap; /* Impede que as pastilhas quebrem em várias linhas */
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch; /* Scroll nativo ultra suave no celular */
-  scrollbar-width: none; /* Oculta a barra no Firefox */
-}
-
-.categorias-scroll-wrapper::-webkit-scrollbar {
-  display: none; /* Oculta a barra no Chrome, Safari e Edge */
-}
-
-/* AS PASTILHAS (PILLS) DE CATEGORIA */
-.category-pill {
-  flex: 0 0 auto; /* Impede que a pastilha esprema o texto */
-  background: rgba(20, 20, 20, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 10px 24px;
-  border-radius: 30px;
-  cursor: pointer;
-  display: inline-flex; /* Alinhamento interno garantido */
-  align-items: center;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.category-pill .pill-text {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-}
-
-/* Efeito Hover */
-.category-pill:hover {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.category-pill:hover .pill-text {
-  color: #fff;
-}
-
-/* Estado Ativo (Selecionado) */
-.category-pill.active {
-  background: var(--accent-red) !important;
-  border-color: var(--accent-red) !important;
-  box-shadow: 0 6px 20px rgba(230, 0, 0, 0.3);
-}
-
-.category-pill.active .pill-text {
-  color: #fff !important;
-}
   </style>
 </head>
 
@@ -453,7 +431,6 @@ $nome = $_SESSION['nome'] ?? "Cliente";
 
       <div class="collapse navbar-collapse" id="menuNav">
         <ul class="navbar-nav ms-auto align-items-center gap-2">
-
           <li class="nav-item">
             <a href="../perfil.php"
               class="nav-link d-flex align-items-center gap-2 px-3 py-2 rounded-3 text-white border border-secondary border-opacity-25"
@@ -464,15 +441,12 @@ $nome = $_SESSION['nome'] ?? "Cliente";
               <span class="small fw-semibold">Meu Perfil</span>
             </a>
           </li>
-
           <li class="nav-item d-none d-lg-block text-white-50 opacity-25 ms-2">|</li>
-
           <li class="nav-item">
             <a href="cliente.php" class="nav-link voltar-link ms-2">
               <i class="bi bi-box-arrow-left text-danger me-1"></i> Voltar
             </a>
           </li>
-
         </ul>
       </div>
     </div>
@@ -483,101 +457,72 @@ $nome = $_SESSION['nome'] ?? "Cliente";
     <p>Olá, <strong><?= htmlspecialchars($nome) ?></strong>! Selecione as melhores peças da culinária japonesa.</p>
   </div>
 
- <div class="container mb-5">
-  <div class="row g-3 justify-content-center">
-    
-    <div class="col-12 col-md-8 col-lg-6">
-      <div class="search-box-gourmet">
-        <i class="bi bi-search search-icon"></i>
-        <input type="text" id="inputBuscaNome" class="input-gourmet" placeholder="O que você deseja saborear hoje?..." oninput="filtrarCardapio()">
+  <div class="container mb-5">
+    <div class="row g-3 justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6">
+        <div class="search-box-gourmet">
+          <i class="bi bi-search search-icon"></i>
+          <input type="text" id="inputBuscaNome" class="input-gourmet" placeholder="O que você deseja saborear hoje?..." oninput="filtrarEOrdenarCardapio()">
+        </div>
+      </div>
+
+      <div class="col-12 text-center mt-3 d-flex justify-content-center gap-3 flex-wrap align-items-center">
+        <button class="btn-toggle-categorias" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCategorias" aria-expanded="true" id="btnFiltroCategorias">
+          <i class="bi bi-sliders2 me-2"></i> Filtrar por Categoria
+        </button>
+
+        <span class="text-white-50 opacity-25 d-none d-sm-inline">|</span>
+
+        <div class="d-flex align-items-center gap-2">
+          <label class="small text-muted fw-bold text-uppercase" style="letter-spacing: 0.5px; font-size: 0.75rem;">
+            <i class="bi bi-arrow-down-up text-danger me-1"></i> Ordenar:
+          </label>
+          <select id="selectOrdemPreco" class="form-select select-custom" onchange="filtrarEOrdenarCardapio()">
+            <option value="padrao">Padrão do Chefe</option>
+            <option value="menor">Menor Preço</option>
+            <option value="maior">Maior Preço</option>
+          </select>
+        </div>
       </div>
     </div>
 
-    <div class="col-12 text-center mt-3">
-      <button class="btn-toggle-categorias" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCategorias" aria-expanded="true" id="btnFiltroCategorias">
-        <i class="bi bi-sliders2 me-2"></i> Filtrar por Categoria
-      </button>
-    </div>
-
-  </div>
-
-  <div class="collapse show mt-4" id="collapseCategorias">
-    <div class="categorias-scroll-wrapper">
-      
+    <div class="collapse show mt-4" id="collapseCategorias">
       <div class="categorias-scroll-wrapper">
-  
-  <div class="category-pill active" data-value="todos" onclick="selecionarCategoria(this)">
-    <span class="pill-text">Todos</span>
-  </div>
-  
-  <div class="category-pill" data-value="sushi" onclick="selecionarCategoria(this)">
-    <span class="pill-text">Sushi</span>
-  </div>
-  
-  <div class="category-pill" data-value="sashimi" onclick="selecionarCategoria(this)">
-    <span class="pill-text">Sashimi</span>
-  </div>
-  
-  <div class="category-pill" data-value="ramen" onclick="selecionarCategoria(this)">
-    <span class="pill-text">Ramen</span>
-  </div>
-  
-  <div class="category-pill" data-value="temaki" onclick="selecionarCategoria(this)">
-    <span class="pill-text">Temaki</span>
-  </div>
-
-  <div class="category-pill" data-value="tempura" onclick="selecionarCategoria(this)">
-    <span class="pill-text">Tempurá</span>
-  </div>
-
-  <div class="category-pill" data-value="yakitori" onclick="selecionarCategoria(this)">
-    <span class="pill-text">Yakitori</span>
-  </div>
-
-  <div class="category-pill" data-value="donburi" onclick="selecionarCategoria(this)">
-    <span class="pill-text">Donburi</span>
-  </div>
-
-  <div class="category-pill" data-value="udon_soba" onclick="selecionarCategoria(this)">
-    <span class="pill-text">Udon / Soba</span>
-  </div>
-
-  <div class="category-pill" data-value="onigiri" onclick="selecionarCategoria(this)">
-    <span class="pill-text">Onigiri</span>
-  </div>
-
-  <div class="category-pill" data-value="curry" onclick="selecionarCategoria(this)">
-    <span class="pill-text">Curry Japonês</span>
-  </div>
-  
-  <div class="category-pill" data-value="bebida" onclick="selecionarCategoria(this)">
-    <span class="pill-text">Bebidas</span>
-  </div>
-  
-  <div class="category-pill" data-value="sobremesa" onclick="selecionarCategoria(this)">
-    <span class="pill-text">Sobremesas (Wagashi)</span>
-  </div>
-
-</div>
+        <div class="category-pill active" data-value="todos" onclick="selecionarCategoria(this)"><span class="pill-text">Todos</span></div>
+        <div class="category-pill" data-value="sushi" onclick="selecionarCategoria(this)"><span class="pill-text">Sushi</span></div>
+        <div class="category-pill" data-value="sashimi" onclick="selecionarCategoria(this)"><span class="pill-text">Sashimi</span></div>
+        <div class="category-pill" data-value="ramen" onclick="selecionarCategoria(this)"><span class="pill-text">Ramen</span></div>
+        <div class="category-pill" data-value="temaki" onclick="selecionarCategoria(this)"><span class="pill-text">Temaki</span></div>
+        <div class="category-pill" data-value="tempura" onclick="selecionarCategoria(this)"><span class="pill-text">Tempurá</span></div>
+        <div class="category-pill" data-value="yakitori" onclick="selecionarCategoria(this)"><span class="pill-text">Yakitori</span></div>
+        <div class="category-pill" data-value="donburi" onclick="selecionarCategoria(this)"><span class="pill-text">Donburi</span></div>
+        <div class="category-pill" data-value="udon_soba" onclick="selecionarCategoria(this)"><span class="pill-text">Udon / Soba</span></div>
+        <div class="category-pill" data-value="onigiri" onclick="selecionarCategoria(this)"><span class="pill-text">Onigiri</span></div>
+        <div class="category-pill" data-value="curry" onclick="selecionarCategoria(this)"><span class="pill-text">Curry Japonês</span></div>
+        <div class="category-pill" data-value="bebida" onclick="selecionarCategoria(this)"><span class="pill-text">Bebidas</span></div>
+        <div class="category-pill" data-value="sobremesa" onclick="selecionarCategoria(this)"><span class="pill-text">Sobremesas (Wagashi)</span></div>
+      </div>
     </div>
   </div>
-</div>
 
   <main class="container pb-5">
     <div class="row g-4" id="gridProdutos">
       <?php foreach ($produtos as $p): ?>
-        <div class="col-md-6 col-lg-4 item-produto" data-categoria="<?= htmlspecialchars($p['categoria'] ?? '') ?>" data-nome="<?= htmlspecialchars(strtolower($p['nome'])) ?>">
+        <div class="col-md-6 col-lg-4 item-produto" 
+             data-categoria="<?= htmlspecialchars(trim(strtolower($p['categoria'] ?? ''))) ?>" 
+             data-nome="<?= htmlspecialchars(strtolower($p['nome'])) ?>"
+             data-preco="<?= $p['preco'] ?>">
           <div class="card-produto">
             
             <div class="card-img-wrapper" data-bs-toggle="modal" data-bs-target="#modal<?= $p['cod'] ?>" style="cursor: pointer;">
               <span class="badge-preco">R$ <?= number_format($p['preco'], 2, ',', '.') ?></span>
               <div class="view-details-overlay"><i class="bi bi-eye"></i></div>
-              <img src="../produtos/<?= $p['foto1'] ?: 'https://via.placeholder.com/300x200?text=Sem+Imagem' ?>" alt="<?= $p['nome'] ?>">
+              <img src="../produtos/<?= $p['foto1'] ?: 'https://via.placeholder.com/300x200?text=Sem+Imagem' ?>" alt="<?= htmlspecialchars($p['nome']) ?>">
             </div>
 
             <div class="card-body-custom">
               <div data-bs-toggle="modal" data-bs-target="#modal<?= $p['cod'] ?>" style="cursor: pointer;">
-                <span class="nome-produto text-truncate"><?= $p['nome'] ?></span>
+                <span class="nome-produto text-truncate"><?= htmlspecialchars($p['nome']) ?></span>
                 <span class="ver-mais-text">Ver detalhes <i class="bi bi-arrow-right ms-1"></i></span>
               </div>
               <button class="btn btn-add w-100" onclick="adicionarCarrinho(<?= $p['cod'] ?>, '<?= addslashes($p['nome']) ?>', <?= $p['preco'] ?>)">
@@ -592,7 +537,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
           <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content" style="background: #0a0a0a; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px;">
               <div class="modal-header" style="background: #000; border-bottom: 1px solid rgba(255,255,255,0.04);">
-                <h5 class="modal-title fw-bold" style="color: #fff;"><?= $p['nome'] ?></h5>
+                <h5 class="modal-title fw-bold" style="color: #fff;"><?= htmlspecialchars($p['nome']) ?></h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
               </div>
               <div class="modal-body p-4">
@@ -630,7 +575,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
                     <button class="carousel-control-next" type="button" data-bs-target="#carousel<?= $p['cod'] ?>" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
                   </div>
                 </div>
-                <p class="text-secondary mb-4"><?= $p['descricao'] ?: 'Sem descrição disponível.' ?></p>
+                <p class="text-secondary mb-4"><?= htmlspecialchars($p['descricao'] ?? 'Sem descrição disponível.') ?></p>
                 <div class="d-flex justify-content-between align-items-center">
                   <h4 style="color: var(--accent-hover); font-weight: 800; margin: 0;">R$ <?= number_format($p['preco'], 2, ',', '.') ?></h4>
                   <button class="btn btn-add" data-bs-dismiss="modal" onclick="adicionarCarrinho(<?= $p['cod'] ?>, '<?= addslashes($p['nome']) ?>', <?= $p['preco'] ?>)">
@@ -672,7 +617,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
             ?>
             <li class="list-group-item d-flex justify-content-between align-items-center p-3" id="item-<?= $idItem ?>">
               <div style="max-width: 55%;">
-                <span class="fw-bold text-white d-block mb-1 text-truncate" style="font-size: 0.95rem;"><?= $item['nome'] ?></span>
+                <span class="fw-bold text-white d-block mb-1 text-truncate" style="font-size: 0.95rem;"><?= htmlspecialchars($item['nome']) ?></span>
                 <span class="fw-bold item-subtotal" style="color: var(--accent-hover);" data-preco="<?= $item['preco'] ?>">
                   R$ <?= number_format($subtotal, 2, ',', '.') ?>
                 </span>
@@ -720,9 +665,8 @@ $nome = $_SESSION['nome'] ?? "Cliente";
     if (!empty($_SESSION['carrinho'])) {
       foreach ($_SESSION['carrinho'] as $item) { $count += $item['quantidade']; }
     }
-    if ($count > 0): ?>
-      <span class="cart-count"><?= $count ?></span>
-    <?php endif; ?>
+    ?>
+    <span class="cart-count" id="globalCartCount" style="<?= $count == 0 ? 'display:none;' : '' ?>"><?= $count ?></span>
   </button>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -740,20 +684,23 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       }, index * 80);
     });
 
-    // LÓGICA DE FILTRAGEM DINÂMICA
+    // LÓGICA DE FILTRAGEM E ORDENAÇÃO DINÂMICA
     let categoriaSelecionada = "todos";
 
     function selecionarCategoria(elemento) {
-      document.querySelectorAll('.btn-categoria-box').forEach(box => box.classList.remove('active'));
+      document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('active'));
       elemento.classList.add('active');
-      categoriaSelecionada = elemento.getAttribute('data-value');
-      filtrarCardapio();
+      categoriaSelecionada = elemento.getAttribute('data-value').trim().toLowerCase();
+      filtrarEOrdenarCardapio();
     }
 
-    function filtrarCardapio() {
+    function filtrarEOrdenarCardapio() {
       const termoBusca = document.getElementById('inputBuscaNome').value.toLowerCase().trim();
-      const itens = document.querySelectorAll('.item-produto'); 
+      const grid = document.getElementById('gridProdutos');
+      const itens = Array.from(grid.querySelectorAll('.item-produto')); 
       const msgVazio = document.getElementById('msgFiltroVazio');
+      const criterioPreco = document.getElementById('selectOrdemPreco').value;
+      
       let encontrouQualquer = false;
 
       itens.forEach(item => {
@@ -771,59 +718,51 @@ $nome = $_SESSION['nome'] ?? "Cliente";
         }
       });
 
-      // Exibe mensagem caso nenhum produto corresponda ao filtro selecionado
-      if (encontrouQualquer) {
-        msgVazio.classList.add('d-none');
-      } else {
-        msgVazio.classList.remove('d-none');
+      if (criterioPreco !== 'padrao') {
+        itens.sort((a, b) => {
+          const precoA = parseFloat(a.getAttribute('data-preco'));
+          const precoB = parseFloat(b.getAttribute('data-preco'));
+          return criterioPreco === 'menor' ? precoA - precoB : precoB - precoA;
+        });
+        itens.forEach(item => grid.appendChild(item));
       }
-    }
 
-    // Controla o visual do botão de filtro ativo
-    const collapseCategorias = document.getElementById('collapseCategorias');
-    const btnFiltro = document.getElementById('btnFiltroCategorias');
-    if(collapseCategorias && btnFiltro) {
-      collapseCategorias.addEventListener('shown.bs.collapse', () => btnFiltro.classList.add('active'));
-      collapseCategorias.addEventListener('hidden.bs.collapse', () => btnFiltro.classList.remove('active'));
+      msgVazio.classList.toggle('d-none', encontrouQualquer);
     }
 
     function verificarCarrinhoVazio() {
       let lista = document.getElementById('listaCarrinho');
-      if (lista && lista.children.length === 0) {
+      if (lista && (lista.children.length === 0 || !lista.querySelector('.list-group-item:not(#mensagemVazio)'))) {
         lista.innerHTML = `
           <li id="mensagemVazio" class="list-group-item text-center py-5 bg-transparent border-0 text-secondary">
             <i class="bi bi-cart-x fs-1 d-block mb-3 opacity-25"></i>Seu carrinho está vazio.
           </li>
         `;
         document.getElementById('containerTotal').style.display = 'none';
+        let contador = document.getElementById('globalCartCount');
+        if (contador) contador.style.display = 'none';
       }
     }
 
+    // OPERAÇÕES DO SEU SCRIPT ENCAIXADAS AQUI
     function adicionarCarrinho(id, nome, preco) {
       const precoNum = parseFloat(String(preco).replace(',', '.'));
-
-      if (isNaN(precoNum)) {
-        console.error("Preço inválido recebido.");
-        return;
-      }
+      if (isNaN(precoNum)) return;
 
       fetch("../../CONTROLLER/CarrinhoController.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `acao=Adicionar&id_produto=${id}&nome=${encodeURIComponent(nome)}&quantidade=1&preco=${precoNum}`
       })
-      .then(response => response.text())
       .then(() => {
         let itemExistente = document.getElementById(`item-${id}`);
-        
         if (itemExistente) {
           atualizarQuantidadeVisivel(id, 'somar', precoNum);
         } else {
           let msgVazio = document.getElementById('mensagemVazio');
-          if (msgVazio) {
-            msgVazio.remove();
-            document.getElementById('containerTotal').style.display = 'block';
-          }
+          if (msgVazio) msgVazio.remove();
+
+          document.getElementById('containerTotal').style.display = 'block';
 
           let lista = document.getElementById('listaCarrinho');
           let novoItem = document.createElement('li');
@@ -919,21 +858,15 @@ $nome = $_SESSION['nome'] ?? "Cliente";
     }
 
     function atualizarTotaisGerais(valorVariacao, qtdVariacao) {
-      let contador = document.querySelector('.cart-count');
+      let contador = document.getElementById('globalCartCount');
       if (contador) {
         let novaQtdTotal = (parseInt(contador.innerText) || 0) + qtdVariacao;
         if (novaQtdTotal <= 0) {
-          contador.remove();
+          contador.style.display = 'none';
+          contador.innerText = "0";
         } else {
           contador.innerText = novaQtdTotal;
-        }
-      } else if (qtdVariacao > 0) {
-        let btn = document.getElementById('btnCart');
-        if (btn) {
-          let span = document.createElement('span');
-          span.className = 'cart-count';
-          span.innerText = qtdVariacao;
-          btn.appendChild(span);
+          contador.style.display = 'flex';
         }
       }
 
@@ -941,12 +874,11 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       let inputTotal = document.getElementById('inputTotal');
       
       if (totalEl && inputTotal) {
-        let valorLimpo = inputTotal.value.replace(',', '.');
-        let totalAtual = parseFloat(valorLimpo) || 0;
+        let totalAtual = parseFloat(inputTotal.value) || 0;
         let novoTotal = totalAtual + valorVariacao;
         if (novoTotal < 0) novoTotal = 0;
 
-        inputTotal.value = novoTotal;
+        inputTotal.value = novoTotal.toFixed(2);
         totalEl.innerText = "R$ " + novoTotal.toLocaleString('pt-br', { minimumFractionDigits: 2 });
       }
     }
