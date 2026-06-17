@@ -120,31 +120,72 @@ if ($visitante_anonimo) {
       margin-top: 10px;
     }
 
-    /* FILTROS */
+    /* NOVO DESIGN DOS FILTROS */
     .filtro-container {
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 10px;
+      background: linear-gradient(135deg, #141414 0%, #0d0d0d 100%);
+      border: 1px solid #252525;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     }
+
+    .filtro-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filtro-label i {
+      color: #e60000;
+    }
+
     .form-select {
-      background-color: #1a1a1a;
+      background-color: #161616;
       border: 1px solid #333;
       color: #fff;
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
     }
+
     .form-select:focus {
-      background-color: #222;
+      background-color: #1f1f1f;
       color: #fff;
       border-color: #e60000;
-      box-shadow: 0 0 0 0.25rem rgba(230, 0, 0, 0.25);
+      box-shadow: 0 0 0 3px rgba(230, 0, 0, 0.15);
     }
+
     .btn-filtro {
-      background-color: #e60000;
-      color: white;
+      background: #e60000;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 0.6rem 1.5rem;
+      border-radius: 10px;
       border: none;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
+
     .btn-filtro:hover {
-      background-color: #b30000;
-      color: white;
+      background: #ff1a1a;
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(230, 0, 0, 0.3);
+    }
+    
+    .btn-filtro:active {
+      transform: translateY(0);
     }
 
     .estrelas i {
@@ -227,11 +268,14 @@ if ($visitante_anonimo) {
     <div class="nota">Experiências reais da nossa comunidade</div>
   </div>
 
-  <div class="container mb-4">
-    <form method="GET" action="" class="filtro-container p-3">
+  <div class="container mb-5">
+    <form method="GET" action="" class="filtro-container">
       <div class="row g-3 align-items-end">
+        
         <div class="col-md-4">
-          <label class="form-label small text-muted">Filtrar por Usuário</label>
+          <label class="filtro-label">
+            <i class="bi bi-person-badge"></i> Tipo de Usuário
+          </label>
           <select name="perfil" class="form-select">
             <option value="todos" <?= $filtro_perfil == 'todos' ? 'selected' : '' ?>>Todos os Perfis</option>
             <option value="cliente" <?= $filtro_perfil == 'cliente' ? 'selected' : '' ?>>Clientes</option>
@@ -239,17 +283,24 @@ if ($visitante_anonimo) {
             <option value="entregador" <?= $filtro_perfil == 'entregador' ? 'selected' : '' ?>>Entregadores</option>
           </select>
         </div>
+
         <div class="col-md-4">
-          <label class="form-label small text-muted">Ordenar por Nota</label>
+          <label class="filtro-label">
+            <i class="bi bi-sliders"></i> Ordenação
+          </label>
           <select name="ordem" class="form-select">
             <option value="recentes" <?= $filtro_ordem == 'recentes' ? 'selected' : '' ?>>Padrão / Recentes</option>
-            <option value="melhores" <?= $filtro_ordem == 'melhores' ? 'selected' : '' ?>>Melhores Avaliações (5★ a 1★)</option>
-            <option value="piores" <?= $filtro_ordem == 'piores' ? 'selected' : '' ?>>Piores Avaliações (1★ a 5★)</option>
+            <option value="melhores" <?= $filtro_ordem == 'melhores' ? 'selected' : '' ?>>Melhores Notas (5★ a 1★)</option>
+            <option value="piores" <?= $filtro_ordem == 'piores' ? 'selected' : '' ?>>Piores Notas (1★ a 5★)</option>
           </select>
         </div>
+
         <div class="col-md-4">
-          <button type="submit" class="btn btn-filtro w-100 fw-bold">Aplicar Filtros</button>
+          <button type="submit" class="btn btn-filtro w-100">
+            <i class="bi bi-funnel-fill"></i> Filtrar Avaliações
+          </button>
         </div>
+
       </div>
     </form>
   </div>
