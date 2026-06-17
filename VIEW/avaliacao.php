@@ -5,27 +5,55 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // 2. BYPASS INTELIGENTE: Se não houver ninguém logado, criamos uma sessão fantasma
-// Isso impede que o 'verificacao.php' jogue o visitante para a tela de login
 $visitante_anonimo = false;
 if (!isset($_SESSION['cod']) && !isset($_SESSION['usuario'])) {
-    $_SESSION['cod'] = 999999;          // Um ID fictício que não existe no banco
-    $_SESSION['usuario'] = 'Visitante'; // Nome fictício
-    $visitante_anonimo = true;          // Marcamos que ele é um visitante
+    $_SESSION['cod'] = 999999;          
+    $_SESSION['usuario'] = 'Visitante'; 
+    $visitante_anonimo = true;          
 }
 
-// 3. Agora podemos chamar o Controller com segurança. 
-// O DAO vai rodar a verificação, ver que a sessão existe e deixar a página carregar!
+// 3. Chamando o Controller
 require_once __DIR__ . "/../CONTROLLER/AvaliacaoController.php"; 
 
 $controller = new AvaliacaoController();
-$avaliacoes = $controller->listarAvaliacoesGerais();
+$avaliacoes_originais = $controller->listarAvaliacoesGerais();
+$avaliacoes = [];
+
+// --- SISTEMA DE FILTRO E ORDENAÇÃO (PHP) ---
+$filtro_perfil = isset($_GET['perfil']) ? $_GET['perfil'] : 'todos';
+$filtro_ordem = isset($_GET['ordem']) ? $_GET['ordem'] : 'recentes';
+
+if (!empty($avaliacoes_originais)) {
+    foreach ($avaliacoes_originais as $review) {
+        // Identifica o cargo da mesma forma que você faz no HTML
+        $cargo = "Membro";
+        if (!empty($review['nome_cliente'])) $cargo = "Cliente";
+        elseif (!empty($review['nome_entregador'])) $cargo = "Entregador";
+        elseif (!empty($review['nome_admin'])) $cargo = "Administrador";
+
+        // Aplica o filtro por perfil
+        if ($filtro_perfil === 'todos' || strtolower($cargo) === strtolower($filtro_perfil)) {
+            $avaliacoes[] = $review;
+        }
+    }
+
+    // Aplica a ordenação por Nota (Melhores / Piores)
+    if ($filtro_ordem === 'melhores') {
+        usort($avaliacoes, function($a, $b) {
+            return ($b['nota'] ?? 5) <=> ($a['nota'] ?? 5);
+        });
+    } elseif ($filtro_ordem === 'piores') {
+        usort($avaliacoes, function($a, $b) {
+            return ($a['nota'] ?? 5) <=> ($b['nota'] ?? 5);
+        });
+    }
+}
+// --------------------------------------------
 
 // 4. DESTRÓI A SESSÃO FANTASMA IMEDIATAMENTE
-// Limpamos a memória para que o visitante não fique logado de verdade no resto do site
 if ($visitante_anonimo) {
     unset($_SESSION['cod']);
     unset($_SESSION['usuario']);
-    // Se o seu verificacao.php usar outras variáveis (como $_SESSION['perfil']), destrua-as aqui também
 }
 ?>
 <!DOCTYPE html>
@@ -73,7 +101,7 @@ if ($visitante_anonimo) {
 
     /* HERO */
     .hero {
-      padding: 80px 0 40px;
+      padding: 60px 0 20px;
       text-align: center;
     }
 
@@ -90,6 +118,33 @@ if ($visitante_anonimo) {
     .nota {
       color: #ccc;
       margin-top: 10px;
+    }
+
+    /* FILTROS */
+    .filtro-container {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 10px;
+    }
+    .form-select {
+      background-color: #1a1a1a;
+      border: 1px solid #333;
+      color: #fff;
+    }
+    .form-select:focus {
+      background-color: #222;
+      color: #fff;
+      border-color: #e60000;
+      box-shadow: 0 0 0 0.25rem rgba(230, 0, 0, 0.25);
+    }
+    .btn-filtro {
+      background-color: #e60000;
+      color: white;
+      border: none;
+    }
+    .btn-filtro:hover {
+      background-color: #b30000;
+      color: white;
     }
 
     .estrelas i {
@@ -172,6 +227,33 @@ if ($visitante_anonimo) {
     <div class="nota">Experiências reais da nossa comunidade</div>
   </div>
 
+  <div class="container mb-4">
+    <form method="GET" action="" class="filtro-container p-3">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label small text-muted">Filtrar por Usuário</label>
+          <select name="perfil" class="form-select">
+            <option value="todos" <?= $filtro_perfil == 'todos' ? 'selected' : '' ?>>Todos os Perfis</option>
+            <option value="cliente" <?= $filtro_perfil == 'cliente' ? 'selected' : '' ?>>Clientes</option>
+            <option value="administrador" <?= $filtro_perfil == 'administrador' ? 'selected' : '' ?>>Administradores</option>
+            <option value="entregador" <?= $filtro_perfil == 'entregador' ? 'selected' : '' ?>>Entregadores</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label small text-muted">Ordenar por Nota</label>
+          <select name="ordem" class="form-select">
+            <option value="recentes" <?= $filtro_ordem == 'recentes' ? 'selected' : '' ?>>Padrão / Recentes</option>
+            <option value="melhores" <?= $filtro_ordem == 'melhores' ? 'selected' : '' ?>>Melhores Avaliações (5★ a 1★)</option>
+            <option value="piores" <?= $filtro_ordem == 'piores' ? 'selected' : '' ?>>Piores Avaliações (1★ a 5★)</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <button type="submit" class="btn btn-filtro w-100 fw-bold">Aplicar Filtros</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
   <div class="container pb-5">
     <div class="row g-4">
 
@@ -227,7 +309,7 @@ if ($visitante_anonimo) {
         <?php endforeach; ?>
       <?php else: ?>
         <div class="col-12 text-center py-5">
-          <p class="text-muted">Nenhuma avaliação encontrada no banco de dados.</p>
+          <p class="text-muted">Nenhuma avaliação corresponde aos filtros selecionados.</p>
         </div>
       <?php endif; ?>
 
