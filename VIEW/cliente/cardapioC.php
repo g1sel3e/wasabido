@@ -145,7 +145,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       color: var(--accent-hover);
     }
 
-    /* CONTAINER DE CATEGORIAS (SCROLL HORIZONTAL) */
+    /* CONTAINER DE CATEGORIAS (SCROLL HORIZONTAL E ARRASTO) */
     .categorias-scroll-wrapper {
       display: flex;
       gap: 12px;
@@ -155,7 +155,8 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      cursor: grab; /* Indica que é possível arrastar ou interagir */
+      cursor: grab;
+      user-select: none;
     }
 
     .categorias-scroll-wrapper:active {
@@ -177,7 +178,6 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       display: inline-flex;
       align-items: center;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      user-select: none; /* Evita selecionar o texto ao tentar interagir */
     }
 
     .category-pill .pill-text {
@@ -185,6 +185,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       font-size: 0.9rem;
       font-weight: 600;
       letter-spacing: 0.03em;
+      pointer-events: none; /* Evita que o texto quebre o arrasto do mouse */
     }
 
     .category-pill:hover {
@@ -678,13 +679,45 @@ $nome = $_SESSION['nome'] ?? "Cliente";
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    // --- NOVO TRECHO ADICIONADO PARA CORREÇÃO DO DESKTOP/NOTEBOOK ---
-    // Faz a rodinha do mouse rodar horizontalmente na seção de categorias
+    // --- SISTEMA DE ARRASTAR COM O MOUSE (DRAG TO SCROLL) ---
     const wrapperCategorias = document.querySelector('.categorias-scroll-wrapper');
+    
     if (wrapperCategorias) {
+      let isDown = false;
+      let startX;
+      let scrollLeft;
+
+      // Evento de rolagem com a rodinha do mouse (Scroll Wheel)
       wrapperCategorias.addEventListener('wheel', (e) => {
         e.preventDefault();
         wrapperCategorias.scrollLeft += e.deltaY;
+      });
+
+      // Quando clica e segura com o mouse
+      wrapperCategorias.addEventListener('mousedown', (e) => {
+        isDown = true;
+        wrapperCategorias.classList.add('active');
+        startX = e.pageX - wrapperCategorias.offsetLeft;
+        scrollLeft = wrapperCategorias.scrollLeft;
+      });
+
+      // Quando o mouse sai da área das categorias
+      wrapperCategorias.addEventListener('mouseleave', () => {
+        isDown = false;
+      });
+
+      // Quando solta o clique do mouse
+      wrapperCategorias.addEventListener('mouseup', () => {
+        isDown = false;
+      });
+
+      // Quando move o mouse enquanto está clicado
+      wrapperCategorias.addEventListener('mousemove', (e) => {
+        if(!isDown) return; 
+        e.preventDefault();
+        const x = e.pageX - wrapperCategorias.offsetLeft;
+        const walk = (x - startX) * 2; // Multiplicador de velocidade do arrasto
+        wrapperCategorias.scrollLeft = scrollLeft - walk;
       });
     }
     // ----------------------------------------------------------------
@@ -773,7 +806,17 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       .then(() => {
         let itemExistente = document.getElementById(`item-${id}`);
         if (itemExistente) {
-          atualizarQuantidadeVisivel(id, 'somar', precoNum);
+          let qtyEl = document.getElementById(`qty-${id}`);
+          if (qtyEl) {
+            let novaQtd = parseInt(qtyEl.innerText) + 1;
+            qtyEl.innerText = novaQtd;
+            
+            let subtotalEl = itemExistente.querySelector('.item-subtotal');
+            if (subtotalEl) {
+              let novoSub = precoNum * novaQtd;
+              subtotalEl.innerText = `R$ ${novoSub.toLocaleString('pt-br', { minimumFractionDigits: 2 })}`;
+            }
+          }
         } else {
           let msgVazio = document.getElementById('mensagemVazio');
           if (msgVazio) msgVazio.remove();
@@ -801,7 +844,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
                   <i class="bi bi-plus text-white"></i>
                 </button>
               </div>
-              <button class="btn-remove-item" onclick="atualizarQuantidade(${id}, 'remover', ${precoNum})">
+              <button class="btn-remove-item" onclick="atualizarQuantidade(${id}, 'remover', ${precoNum})" title="Remover item">
                 <i class="bi bi-trash3-fill"></i>
               </button>
             </div>
@@ -809,41 +852,25 @@ $nome = $_SESSION['nome'] ?? "Cliente";
           lista.appendChild(novoItem);
         }
         
-        // Atualizar contadores globais e totais
-        let globalCartCount = document.getElementById('globalCartCount');
-        if (globalCartCount) {
-          let atual = parseInt(globalCartCount.innerText) || 0;
-          globalCartCount.innerText = atual + 1;
-          globalCartCount.style.display = 'flex';
+        // Atualiza a contagem global e o valor total na interface
+        let contador = document.getElementById('globalCartCount');
+        if (contador) {
+          let totalItens = 0;
+          document.querySelectorAll('.qty-number').forEach(el => totalItens += parseInt(el.innerText));
+          contador.innerText = totalItens;
+          contador.style.display = totalItens > 0 ? 'flex' : 'none';
         }
+
+        let totalGeral = 0;
+        document.querySelectorAll('.item-subtotal').forEach(el => {
+          let precoEl = parseFloat(el.getAttribute('data-preco'));
+          let qtdEl = parseInt(el.closest('li').querySelector('.qty-number').innerText);
+          totalGeral += (precoEl * qtdEl);
+        });
         
-        atualizarTotalEInput(precoNum, 'somar');
+        document.getElementById('totalValor').innerText = `R$ ${totalGeral.toLocaleString('pt-br', { minimumFractionDigits: 2 })}`;
+        document.getElementById('inputTotal').value = totalGeral;
       });
-    }
-
-    function atualizarQuantidadeVisivel(id, acao, preco) {
-      let qtySpan = document.getElementById(`qty-${id}`);
-      if (!qtySpan) return;
-      let qtdAtual = parseInt(qtySpan.innerText);
-      
-      if (acao === 'somar') {
-        qtySpan.innerText = qtdAtual + 1;
-      } else if (acao === 'subtrair' && qtdAtual > 1) {
-        qtySpan.innerText = qtdAtual - 1;
-      }
-    }
-
-    function atualizarTotalEInput(valor, acao) {
-      let totalValorEl = document.getElementById('totalValor');
-      let inputTotalEl = document.getElementById('inputTotal');
-      if(!totalValorEl || !inputTotalEl) return;
-
-      let totalAtual = parseFloat(inputTotalEl.value) || 0;
-      if (acao === 'somar') totalAtual += valor;
-      if (acao === 'subtrair') totalAtual -= valor;
-      
-      inputTotalEl.value = totalAtual;
-      totalValorEl.innerText = "R$ " + totalAtual.toLocaleString('pt-br', { minimumFractionDigits: 2 });
     }
   </script>
 </body>
