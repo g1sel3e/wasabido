@@ -155,6 +155,11 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
+      cursor: grab; /* Indica que é possível arrastar ou interagir */
+    }
+
+    .categorias-scroll-wrapper:active {
+      cursor: grabbing;
     }
 
     .categorias-scroll-wrapper::-webkit-scrollbar {
@@ -172,6 +177,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       display: inline-flex;
       align-items: center;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none; /* Evita selecionar o texto ao tentar interagir */
     }
 
     .category-pill .pill-text {
@@ -672,6 +678,17 @@ $nome = $_SESSION['nome'] ?? "Cliente";
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
+    // --- NOVO TRECHO ADICIONADO PARA CORREÇÃO DO DESKTOP/NOTEBOOK ---
+    // Faz a rodinha do mouse rodar horizontalmente na seção de categorias
+    const wrapperCategorias = document.querySelector('.categorias-scroll-wrapper');
+    if (wrapperCategorias) {
+      wrapperCategorias.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        wrapperCategorias.scrollLeft += e.deltaY;
+      });
+    }
+    // ----------------------------------------------------------------
+
     // Animação inicial dos cards
     const cards = document.querySelectorAll('.card-produto');
     cards.forEach((card, index) => {
@@ -744,7 +761,6 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       }
     }
 
-    // OPERAÇÕES DO SEU SCRIPT ENCAIXADAS AQUI
     function adicionarCarrinho(id, nome, preco) {
       const precoNum = parseFloat(String(preco).replace(',', '.'));
       if (isNaN(precoNum)) return;
@@ -791,96 +807,43 @@ $nome = $_SESSION['nome'] ?? "Cliente";
             </div>
           `;
           lista.appendChild(novoItem);
-          atualizarTotaisGerais(precoNum, 1);
         }
+        
+        // Atualizar contadores globais e totais
+        let globalCartCount = document.getElementById('globalCartCount');
+        if (globalCartCount) {
+          let atual = parseInt(globalCartCount.innerText) || 0;
+          globalCartCount.innerText = atual + 1;
+          globalCartCount.style.display = 'flex';
+        }
+        
+        atualizarTotalEInput(precoNum, 'somar');
       });
     }
 
-    function atualizarQuantidade(id, operacao, preco) {
-      const precoNum = parseFloat(String(preco).replace(',', '.'));
-      let acaoController = "Adicionar"; 
-      let qtdVariacao = 1;
-
-      let qtyEl = document.getElementById(`qty-${id}`);
-      let qtdAtual = qtyEl ? parseInt(qtyEl.innerText) : 1;
-
-      if (operacao === 'subtrair') {
-        if (qtdAtual <= 1) {
-          operacao = 'remover'; 
-        } else {
-          acaoController = "Subtrair"; 
-          qtdVariacao = -1;
-        }
+    function atualizarQuantidadeVisivel(id, acao, preco) {
+      let qtySpan = document.getElementById(`qty-${id}`);
+      if (!qtySpan) return;
+      let qtdAtual = parseInt(qtySpan.innerText);
+      
+      if (acao === 'somar') {
+        qtySpan.innerText = qtdAtual + 1;
+      } else if (acao === 'subtrair' && qtdAtual > 1) {
+        qtySpan.innerText = qtdAtual - 1;
       }
-
-      if (operacao === 'remover') {
-        acaoController = "Remover";
-        qtdVariacao = -qtdAtual; 
-      }
-
-      fetch("../../CONTROLLER/CarrinhoController.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `acao=${acaoController}&id_produto=${id}&quantidade=1`
-      })
-      .then(() => {
-        if (operacao === 'remover') {
-          let item = document.getElementById(`item-${id}`);
-          if (item) item.remove();
-          atualizarTotaisGerais(precoNum * qtdVariacao, qtdVariacao);
-          verificarCarrinhoVazio();
-        } else {
-          atualizarQuantidadeVisivel(id, operacao, precoNum);
-        }
-      });
     }
 
-    function atualizarQuantidadeVisivel(id, operacao, preco) {
-      const precoNum = parseFloat(String(preco).replace(',', '.'));
-      let qtyEl = document.getElementById(`qty-${id}`);
-      if (!qtyEl) return;
+    function atualizarTotalEInput(valor, acao) {
+      let totalValorEl = document.getElementById('totalValor');
+      let inputTotalEl = document.getElementById('inputTotal');
+      if(!totalValorEl || !inputTotalEl) return;
 
-      let qtdAtual = parseInt(qtyEl.innerText) || 0;
-      let novaQtd = operacao === 'somar' ? qtdAtual + 1 : qtdAtual - 1;
-      if (novaQtd < 1) novaQtd = 1;
+      let totalAtual = parseFloat(inputTotalEl.value) || 0;
+      if (acao === 'somar') totalAtual += valor;
+      if (acao === 'subtrair') totalAtual -= valor;
       
-      qtyEl.innerText = novaQtd;
-
-      let itemLi = document.getElementById(`item-${id}`);
-      if (itemLi) {
-        let subtotalEl = itemLi.querySelector('.item-subtotal');
-        let novoSubtotal = novaQtd * precoNum;
-        subtotalEl.innerText = "R$ " + novoSubtotal.toLocaleString('pt-br', { minimumFractionDigits: 2 });
-      }
-
-      let variacaoQtd = operacao === 'somar' ? 1 : -1;
-      atualizarTotaisGerais(precoNum * variacaoQtd, variacaoQtd);
-    }
-
-    function atualizarTotaisGerais(valorVariacao, qtdVariacao) {
-      let contador = document.getElementById('globalCartCount');
-      if (contador) {
-        let novaQtdTotal = (parseInt(contador.innerText) || 0) + qtdVariacao;
-        if (novaQtdTotal <= 0) {
-          contador.style.display = 'none';
-          contador.innerText = "0";
-        } else {
-          contador.innerText = novaQtdTotal;
-          contador.style.display = 'flex';
-        }
-      }
-
-      let totalEl = document.getElementById('totalValor');
-      let inputTotal = document.getElementById('inputTotal');
-      
-      if (totalEl && inputTotal) {
-        let totalAtual = parseFloat(inputTotal.value) || 0;
-        let novoTotal = totalAtual + valorVariacao;
-        if (novoTotal < 0) novoTotal = 0;
-
-        inputTotal.value = novoTotal.toFixed(2);
-        totalEl.innerText = "R$ " + novoTotal.toLocaleString('pt-br', { minimumFractionDigits: 2 });
-      }
+      inputTotalEl.value = totalAtual;
+      totalValorEl.innerText = "R$ " + totalAtual.toLocaleString('pt-br', { minimumFractionDigits: 2 });
     }
   </script>
 </body>
