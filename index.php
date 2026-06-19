@@ -88,6 +88,7 @@
     .btn-hero:hover {
       background-color: #b30000;
       transform: scale(1.05);
+      color: white;
     }
 
     /* CARDS */
@@ -130,6 +131,7 @@
 
     .card-custom img {
       height: 200px;
+      width: 100%;
       object-fit: cover;
     }
 
@@ -159,6 +161,7 @@
 
     .btn-card:hover {
       background-color: #b30000;
+      color: white;
     }
 
     /* FOOTER */
@@ -171,10 +174,10 @@
       font-size: 0.9rem;
     }
 
-    /* RESPONSIVO */
+    /* RESPONSIVO AJUSTADO */
     @media (max-width: 768px) {
       .hero-content h1 {
-        font-size: 2.5rem;
+        font-size: 2.3rem;
       }
 
       .hero-content p {
@@ -182,7 +185,19 @@
       }
 
       .card-custom img {
-        height: 150px;
+        height: 180px;
+      }
+    }
+
+    /* Ajuste fino para celulares muito pequenos (telas até 400px) */
+    @media (max-width: 400px) {
+      .hero-content h1 {
+        font-size: 1.8rem;
+      }
+      
+      .btn-card {
+        font-size: 0.85rem;
+        padding: 8px 15px;
       }
     }
   </style>
@@ -221,7 +236,7 @@
     <section class="hero">
       <div class="hero-content">
         <h1>Experiência Japonesa Digital</h1>
-        <p>Controle pedidos, cardápio e atendimento com style e eficiência.</p>
+        <p>Controle pedidos, cardápio e atendimento com estilo e eficiência.</p>
 
         <a href="#" class="btn btn-hero">
           <i class="bi bi-bag-check me-2"></i> Fazer Pedido
@@ -257,7 +272,7 @@
           <div class="col-md-4 d-flex">
             <div class="card card-custom w-100">
 
-              <img src="https://images.unsplash.com/photo-1576402187878-974f70c890a5" alt="Sobre">
+              <img src="https://images.unsplash.com/photo-1611143669185-af224c5e3252?auto=format&fit=crop&w=800&q=80" alt="Sobre">
 
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title">Sobre</h5>
@@ -277,7 +292,7 @@
           <div class="col-md-4 d-flex">
             <div class="card card-custom w-100">
 
-              <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092" alt="Avaliações">
+              <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80" alt="Avaliações">
 
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title">Avaliações</h5>
