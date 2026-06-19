@@ -376,47 +376,76 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       color: #ff3333;
     }
 
-    /* QUADRADOS DE CATEGORIA */
-    .categorias-container {
-      max-width: 800px;
+    /* ==========================================================================
+       NOVO DESIGN DE CATEGORIAS (SEM EMOJIS, PREMIUM E 100% RESPONSIVO)
+       ========================================================================== */
+    
+    /* Wrapper que permite o scroll horizontal no mobile sem vazar da tela */
+    .categorias-scroll-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 8px;
       margin: 0 auto 2rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: 10px;
-      padding: 15px;
-      background: rgba(15, 15, 15, 0.5);
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      max-width: 900px;
+      /* Esconde a barra de rolagem padrão no IE/Edge e Firefox */
+      -ms-overflow-style: none;  
+      scrollbar-width: none;  
     }
 
-    .btn-categoria-box {
-      background: rgba(30, 30, 30, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      color: #a1a1aa;
-      padding: 12px 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-align: center;
-      cursor: pointer;
+    /* Esconde a barra de rolagem padrão no Chrome, Safari e Opera */
+    .categorias-scroll-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Container flexível que alinha os botões em linha */
+    .categorias-container {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.2s ease;
+      gap: 12px;
+      padding: 6px;
+      width: max-content; /* Garante que os itens fiquem na mesma linha no mobile */
+      margin: 0 auto;
     }
 
-    .btn-categoria-box:hover {
+    /* Ajuste para telas maiores: distribui em formato de grid fluído se couber */
+    @media (min-width: 992px) {
+      .categorias-scroll-wrapper {
+        overflow-x: visible;
+      }
+      .categorias-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+      }
+    }
+
+    /* Estilização moderna estilo "Pílula" (Pill Tags) */
+    .btn-categoria-box {
       background: rgba(255, 255, 255, 0.03);
-      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 30px; /* Bordas arredondadas e limpas */
+      color: var(--text-muted);
+      padding: 10px 22px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      white-space: nowrap; /* Impede que o texto quebre linha internamente */
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+    /* Hover discreto e refinado */
+    .btn-categoria-box:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Categoria Selecionada: Destaque com o Vermelho WasabiDO */
     .btn-categoria-box.active {
-      background: #e60000 !important;
+      background: var(--accent-red) !important;
       color: #fff !important;
-      border-color: #e60000 !important;
-      box-shadow: 0 8px 20px rgba(230, 0, 0, 0.3);
+      border-color: var(--accent-red) !important;
+      box-shadow: 0 4px 15px rgba(230, 0, 0, 0.35);
     }
   </style>
 </head>
@@ -470,31 +499,50 @@ $nome = $_SESSION['nome'] ?? "Cliente";
     </div>
 
     <div class="collapse show" id="collapseCategorias">
-      <div class="categorias-container">
-        <div class="btn-categoria-box active" data-value="todos" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍱</span><span>Todos</span>
-        </div>
-        <div class="btn-categoria-box" data-value="sushi" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍣</span><span>Sushi</span>
-        </div>
-        <div class="btn-categoria-box" data-value="sashimi" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🐟</span><span>Sashimi</span>
-        </div>
-        <div class="btn-categoria-box" data-value="ramen" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍜</span><span>Ramen</span>
-        </div>
-        <div class="btn-categoria-box" data-value="temaki" onclick="selecionarCategoria(this)">
-          <span class="fs-4">📐</span><span>Temaki</span>
-        </div>
-        <div class="btn-categoria-box" data-value="bebida" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🥤</span><span>Bebidas</span>
-        </div>
-        <div class="btn-categoria-box" data-value="sobremesa" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍡</span><span>Sobremesas</span>
-        </div>
+  <div class="categorias-scroll-wrapper">
+    <div class="categorias-container">
+      <div class="btn-categoria-box active" data-value="todos" onclick="selecionarCategoria(this)">
+        <span>Todos</span>
+      </div>
+      <div class="btn-categoria-box" data-value="sushi" onclick="selecionarCategoria(this)">
+        <span>Sushi</span>
+      </div>
+      <div class="btn-categoria-box" data-value="sashimi" onclick="selecionarCategoria(this)">
+        <span>Sashimi</span>
+      </div>
+      <div class="btn-categoria-box" data-value="ramen" onclick="selecionarCategoria(this)">
+        <span>Ramen</span>
+      </div>
+      <div class="btn-categoria-box" data-value="temaki" onclick="selecionarCategoria(this)">
+        <span>Temaki</span>
+      </div>
+      <div class="btn-categoria-box" data-value="tempura" onclick="selecionarCategoria(this)">
+        <span>Tempurá</span>
+      </div>
+      <div class="btn-categoria-box" data-value="yakitori" onclick="selecionarCategoria(this)">
+        <span>Yakitori</span>
+      </div>
+      <div class="btn-categoria-box" data-value="donburi" onclick="selecionarCategoria(this)">
+        <span>Donburi</span>
+      </div>
+      <div class="btn-categoria-box" data-value="udon_soba" onclick="selecionarCategoria(this)">
+        <span>Udon / Soba</span>
+      </div>
+      <div class="btn-categoria-box" data-value="onigiri" onclick="selecionarCategoria(this)">
+        <span>Onigiri</span>
+      </div>
+      <div class="btn-categoria-box" data-value="curry" onclick="selecionarCategoria(this)">
+        <span>Curry Japonês</span>
+      </div>
+      <div class="btn-categoria-box" data-value="bebida" onclick="selecionarCategoria(this)">
+        <span>Bebidas</span>
+      </div>
+      <div class="btn-categoria-box" data-value="sobremesa" onclick="selecionarCategoria(this)">
+        <span>Sobremesas (Wagashi)</span>
       </div>
     </div>
   </div>
+</div>
 
   <main class="container pb-5">
     <div class="row g-4" id="gridProdutos">
@@ -676,11 +724,24 @@ $nome = $_SESSION['nome'] ?? "Cliente";
     // LÓGICA DE FILTRAGEM DINÂMICA
     let categoriaSelecionada = "todos";
 
+    // ==========================================================================
+    // NOVA LÓGICA DE FILTRAGEM (RESPONSIVA E OTIMIZADA)
+    // ==========================================================================
+    let categoriaSelecionada = "todos";
+
     function selecionarCategoria(elemento) {
+      // Remove a classe ativa de todas as pílulas
       document.querySelectorAll('.btn-categoria-box').forEach(box => box.classList.remove('active'));
+      
+      // Adiciona a classe ativa na pílula clicada
       elemento.classList.add('active');
+      
+      // Atualiza a categoria global e executa o filtro
       categoriaSelecionada = elemento.getAttribute('data-value');
       filtrarCardapio();
+
+      // [Bônus Mobile] Centraliza suavemente a pílula selecionada na barra de rolagem
+      elemento.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }
 
     function filtrarCardapio() {
