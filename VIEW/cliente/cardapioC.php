@@ -376,47 +376,71 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       color: #ff3333;
     }
 
-    /* QUADRADOS DE CATEGORIA */
-    .categorias-container {
-      max-width: 800px;
+    /* ==========================================================================
+       DESIGN DE CATEGORIAS RESPONSIVO E PREMIUM
+       ========================================================================== */
+    
+    .categorias-scroll-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 8px;
       margin: 0 auto 2rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: 10px;
-      padding: 15px;
-      background: rgba(15, 15, 15, 0.5);
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      max-width: 900px;
+      -ms-overflow-style: none;  
+      scrollbar-width: none;  
+    }
+
+    .categorias-scroll-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .categorias-container {
+      display: flex;
+      gap: 12px;
+      padding: 6px;
+      width: max-content;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 992px) {
+      .categorias-scroll-wrapper {
+        overflow-x: visible;
+      }
+      .categorias-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+      }
     }
 
     .btn-categoria-box {
-      background: rgba(30, 30, 30, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      color: #a1a1aa;
-      padding: 12px 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-align: center;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.03) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 30px !important;
+      color: var(--text-muted) !important;
+      padding: 10px 22px !important;
+      font-size: 0.9rem !important;
+      font-weight: 600 !important;
+      white-space: nowrap !important;
+      cursor: pointer !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      transition: all 0.25s ease !important;
     }
 
     .btn-categoria-box:hover {
-      background: rgba(255, 255, 255, 0.03);
-      color: #fff;
+      background: rgba(255, 255, 255, 0.07) !important;
+      color: #fff !important;
+      border-color: rgba(255, 255, 255, 0.2) !important;
     }
 
     .btn-categoria-box.active {
-      background: #e60000 !important;
+      background: var(--accent-red) !important;
       color: #fff !important;
-      border-color: #e60000 !important;
-      box-shadow: 0 8px 20px rgba(230, 0, 0, 0.3);
+      border-color: var(--accent-red) !important;
+      box-shadow: 0 4px 15px rgba(230, 0, 0, 0.35) !important;
     }
   </style>
 </head>
@@ -470,31 +494,50 @@ $nome = $_SESSION['nome'] ?? "Cliente";
     </div>
 
     <div class="collapse show" id="collapseCategorias">
-      <div class="categorias-container">
-        <div class="btn-categoria-box active" data-value="todos" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍱</span><span>Todos</span>
-        </div>
-        <div class="btn-categoria-box" data-value="sushi" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍣</span><span>Sushi</span>
-        </div>
-        <div class="btn-categoria-box" data-value="sashimi" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🐟</span><span>Sashimi</span>
-        </div>
-        <div class="btn-categoria-box" data-value="ramen" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍜</span><span>Ramen</span>
-        </div>
-        <div class="btn-categoria-box" data-value="temaki" onclick="selecionarCategoria(this)">
-          <span class="fs-4">📐</span><span>Temaki</span>
-        </div>
-        <div class="btn-categoria-box" data-value="bebida" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🥤</span><span>Bebidas</span>
-        </div>
-        <div class="btn-categoria-box" data-value="sobremesa" onclick="selecionarCategoria(this)">
-          <span class="fs-4">🍡</span><span>Sobremesas</span>
-        </div>
+  <div class="categorias-scroll-wrapper">
+    <div class="categorias-container">
+      <div class="btn-categoria-box active" data-value="todos" onclick="selecionarCategoria(this)">
+        <span>Todos</span>
+      </div>
+      <div class="btn-categoria-box" data-value="sushi" onclick="selecionarCategoria(this)">
+        <span>Sushi</span>
+      </div>
+      <div class="btn-categoria-box" data-value="sashimi" onclick="selecionarCategoria(this)">
+        <span>Sashimi</span>
+      </div>
+      <div class="btn-categoria-box" data-value="ramen" onclick="selecionarCategoria(this)">
+        <span>Ramen</span>
+      </div>
+      <div class="btn-categoria-box" data-value="temaki" onclick="selecionarCategoria(this)">
+        <span>Temaki</span>
+      </div>
+      <div class="btn-categoria-box" data-value="tempura" onclick="selecionarCategoria(this)">
+        <span>Tempurá</span>
+      </div>
+      <div class="btn-categoria-box" data-value="yakitori" onclick="selecionarCategoria(this)">
+        <span>Yakitori</span>
+      </div>
+      <div class="btn-categoria-box" data-value="donburi" onclick="selecionarCategoria(this)">
+        <span>Donburi</span>
+      </div>
+      <div class="btn-categoria-box" data-value="udon_soba" onclick="selecionarCategoria(this)">
+        <span>Udon / Soba</span>
+      </div>
+      <div class="btn-categoria-box" data-value="onigiri" onclick="selecionarCategoria(this)">
+        <span>Onigiri</span>
+      </div>
+      <div class="btn-categoria-box" data-value="curry" onclick="selecionarCategoria(this)">
+        <span>Curry Japonês</span>
+      </div>
+      <div class="btn-categoria-box" data-value="bebida" onclick="selecionarCategoria(this)">
+        <span>Bebidas</span>
+      </div>
+      <div class="btn-categoria-box" data-value="sobremesa" onclick="selecionarCategoria(this)">
+        <span>Sobremesas (Wagashi)</span>
       </div>
     </div>
   </div>
+</div>
 
   <main class="container pb-5">
     <div class="row g-4" id="gridProdutos">
