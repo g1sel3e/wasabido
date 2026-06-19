@@ -238,7 +238,7 @@
         <h1>Experiência Japonesa Digital</h1>
         <p>Controle pedidos, cardápio e atendimento com estilo e eficiência.</p>
 
-        <a href="#" class="btn btn-hero">
+        <a href="VIEW/cardapio.php" class="btn btn-hero">
           <i class="bi bi-bag-check me-2"></i> Fazer Pedido
         </a>
       </div>
