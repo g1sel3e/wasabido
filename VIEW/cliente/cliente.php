@@ -183,12 +183,6 @@ $nome = $_SESSION['nome'] ?? "Cliente";
 
       <div class="collapse navbar-collapse" id="menuNav">
         <ul class="navbar-nav ms-auto align-items-center gap-2">
-          <li class="nav-item">
-            <a href="../../CONTROLLER/LoginController.php?acao=Logout" class="nav-link text-white-50 me-2">
-              <i class="bi bi-box-arrow-left me-1"></i> Sair
-            </a>
-          </li>
-          <li class="nav-item d-none d-lg-block text-white-50 opacity-25 me-2">|</li>
 
           <li class="nav-item">
             <a href="../perfil.php"
@@ -200,6 +194,15 @@ $nome = $_SESSION['nome'] ?? "Cliente";
               <span class="small fw-semibold">Meu Perfil</span>
             </a>
           </li>
+
+          <li class="nav-item d-none d-lg-block text-white-50 opacity-25 ms-2">|</li>
+
+          <li class="nav-item">
+            <a href="../../CONTROLLER/LoginController.php?acao=Logout" class="nav-link voltar-link text-white-50 ms-2">
+              <i class="bi bi-box-arrow-left text-danger me-1"></i> Sair
+            </a>
+          </li>
+
         </ul>
       </div>
     </div>
