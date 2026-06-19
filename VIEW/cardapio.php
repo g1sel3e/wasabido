@@ -24,7 +24,7 @@ $produtos = $dao->listar();
       --text-light: #f4f4f4;
       --text-muted: #a1a1aa;
       --accent-red: #e60000;
-      --accent-hover: #ff3333; /* Vermelho mais vivo e moderno */
+      --accent-hover: #ff3333;
     }
 
     body, html {
@@ -104,25 +104,21 @@ $produtos = $dao->listar();
     .card-body h5 { font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 8px; letter-spacing: -0.02em; }
     .ver-mais-text { font-size: 0.85rem; color: var(--accent-hover); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
 
-    /* =========================================
-       MODAL AJUSTADO - DESIGN CORRIGIDO
-       ========================================= */
+    /* MODAL */
     .modal-content {
-      background: #0a0a0a; /* Preto absoluto e profundo */
+      background: #0a0a0a;
       color: var(--text-light);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 24px;
       overflow: hidden;
     }
 
-    /* Estilização moderna do cabeçalho */
     .modal-header { 
       border-bottom: 1px solid rgba(255, 255, 255, 0.04); 
       padding: 1.5rem 2rem; 
       background: #000;
     }
     
-    /* Título do Modal com degradê moderno (Sem branco chapado) */
     .modal-header .modal-title { 
       font-size: 1.5rem;
       font-weight: 800; 
@@ -146,7 +142,6 @@ $produtos = $dao->listar();
       object-fit: cover;
     }
 
-    /* Setas laterais integradas */
     .carousel-control-prev,
     .carousel-control-next {
       width: 45px;
@@ -172,13 +167,6 @@ $produtos = $dao->listar();
       border-color: var(--accent-red);
     }
 
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-      width: 18px;
-      height: 18px;
-    }
-
-    /* Tracinhos restaurados sob a imagem */
     .carousel-indicators [data-bs-target] {
       width: 28px;
       height: 4px;
@@ -194,7 +182,6 @@ $produtos = $dao->listar();
       width: 40px;
     }
 
-    /* Descrição do Produto */
     .modal-descricao { 
       color: #a1a1aa; 
       font-size: 1.05rem; 
@@ -202,7 +189,6 @@ $produtos = $dao->listar();
       margin: 1.8rem 0 1rem; 
     }
 
-    /* Valor reestilizado em Vermelho Neon */
     .modal-preco { 
       font-size: 2.2rem; 
       font-weight: 800; 
@@ -213,7 +199,6 @@ $produtos = $dao->listar();
       text-shadow: 0 0 20px rgba(255, 51, 51, 0.2); 
     }
 
-    /* ESTILO DO NOVO BOTÃO DE LOGIN/CADASTRO */
     .btn-modal-action {
       background-color: var(--accent-red);
       color: #fff;
@@ -265,7 +250,10 @@ $produtos = $dao->listar();
   <main class="container pb-5">
     <div class="row g-4">
 
-      <?php foreach ($produtos as $p) { ?>
+      <?php foreach ($produtos as $p) { 
+        // Lógica inteligente para identificar se a imagem vem da web ou local
+        $src_foto1 = (strpos($p['foto1'], 'http') === 0) ? $p['foto1'] : "produtos/" . $p['foto1'];
+      ?>
 
         <div class="col-md-6 col-lg-4">
           <div class="card card-produto" data-bs-toggle="modal" data-bs-target="#modal<?= $p['cod'] ?>">
@@ -277,8 +265,8 @@ $produtos = $dao->listar();
                 <i class="bi bi-eye"></i>
               </div>
 
-              <?php if ($p['foto1'] != "") { ?>
-                <img src="produtos/<?= $p['foto1'] ?>" alt="<?= $p['nome'] ?>">
+              <?php if (!empty($p['foto1'])) { ?>
+                <img src="<?= $src_foto1 ?>" alt="<?= $p['nome'] ?>">
               <?php } else { ?>
                 <img src="https://via.placeholder.com/300x200?text=Sem+Imagem" alt="Sem imagem">
               <?php } ?>
@@ -324,9 +312,11 @@ $produtos = $dao->listar();
                       <?php $active = true; ?>
                       <?php for ($i = 1; $i <= 4; $i++) {
                         $foto = "foto$i";
-                        if (!empty($p[$foto])) { ?>
+                        if (!empty($p[$foto])) { 
+                          $src_carousel = (strpos($p[$foto], 'http') === 0) ? $p[$foto] : "produtos/" . $p[$foto];
+                        ?>
                           <div class="carousel-item <?= $active ? 'active' : '' ?>">
-                            <img src="produtos/<?= $p[$foto] ?>" class="d-block w-100" alt="Foto de <?= $p['nome'] ?>">
+                            <img src="<?= $src_carousel ?>" class="d-block w-100" alt="Foto de <?= $p['nome'] ?>">
                           </div>
                           <?php $active = false; ?>
                         <?php }
