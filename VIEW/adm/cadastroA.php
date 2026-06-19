@@ -38,30 +38,44 @@ require_once __DIR__ . "/../../verificacao.php";
       min-height: 100vh;
     }
 
-    /* NAVBAR PADRONIZADA COM GLASSMORPHISM */
+    /* NAVBAR PADRONIZADA */
     .navbar {
       background-color: #000;
-      border-bottom: 3px solid var(--accent-red);
+      border-bottom: 3px solid #e60000;
       padding: 0.8rem 0;
       position: sticky;
       top: 0;
       z-index: 1000;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.7);
     }
 
     .navbar-brand img {
       height: 50px;
     }
 
-    .nav-link {
-      color: #eee !important;
+    .btn-sair-nav {
+      color: var(--text-muted) !important;
       font-weight: 600;
-      letter-spacing: 1px;
-      transition: 0.3s;
+      text-decoration: none;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .nav-link:hover {
-      color: var(--accent-red) !important;
+    .btn-sair-nav:hover {
+      color: var(--text-light) !important;
+    }
+
+    .voltar-link {
+        color: var(--accent-red) !important;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    .voltar-link:hover {
+        color: var(--accent-hover) !important;
     }
 
     /* CAPA DO FORMULÁRIO */
