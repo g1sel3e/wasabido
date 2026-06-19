@@ -480,7 +480,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
           <li class="nav-item d-none d-lg-block text-white-50 opacity-25 ms-2">|</li>
 
           <li class="nav-item">
-            <a href="entregador.php" class="nav-link voltar-link ms-2">
+            <a href="cliente.php" class="nav-link voltar-link ms-2">
               <i class="bi bi-box-arrow-left text-danger me-1"></i> Voltar
             </a>
           </li>
