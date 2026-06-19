@@ -487,12 +487,6 @@ $nome = $_SESSION['nome'] ?? "Cliente";
             </div>
 
         <?php } ?>
-
-        <div class="text-center mt-5 pt-4">
-            <p class="text-secondary small">Precisa de ajuda com alguma cobrança? <a href="#"
-                    class="text-white text-decoration-none border-bottom border-secondary pb-1 ms-1">Suporte
-                    WasabiDO</a></p>
-        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
