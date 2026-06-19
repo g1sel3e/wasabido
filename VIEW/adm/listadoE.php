@@ -257,24 +257,41 @@ $nome_admin = $_SESSION['adm_nome'] ?? "Administrador";
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <div class="navbar-brand">
-                <img src="../../imagens/ws.png" alt="Logo">
-            </div>
+    <div class="container">
+      <a href="#" class="navbar-brand">
+        <img src="../../imagens/ws.png" alt="WasabiDO">
+      </a>
 
-            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menuNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menuNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-            <div class="collapse navbar-collapse" id="menuNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a href="adm.php" class="voltar-link"><i class=""></i>Voltar</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+      <div class="collapse navbar-collapse" id="menuNav">
+        <ul class="navbar-nav ms-auto align-items-center gap-2">
+
+          <li class="nav-item">
+            <a href="../perfil.php"
+              class="nav-link d-flex align-items-center gap-2 px-3 py-2 rounded-3 text-white border border-secondary border-opacity-25"
+              style="background: rgba(255,255,255,0.03); transition: 0.2s;"
+              onmouseover="this.style.borderColor='var(--accent-red)'"
+              onmouseout="this.style.borderColor='rgba(255,255,255,0.2)'">
+              <i class="bi bi-person-circle fs-5" style="color: var(--accent-red);"></i>
+              <span class="small fw-semibold">Meu Perfil</span>
+            </a>
+          </li>
+
+          <li class="nav-item d-none d-lg-block text-white-50 opacity-25 ms-2">|</li>
+
+          <li class="nav-item">
+            <a href="adm.php" class="nav-link voltar-link text-white-50 ms-2">
+              <i class="bi bi-box-arrow-left text-danger me-1"></i> Voltar
+            </a>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
 
     <div class="container main-container">
         
