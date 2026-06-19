@@ -31,7 +31,7 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       min-height: 100vh;
     }
 
-    /* NAVBAR */
+     /* NAVBAR PADRONIZADA */
     .navbar {
       background-color: #000;
       border-bottom: 3px solid #e60000;
@@ -42,30 +42,22 @@ $nome = $_SESSION['nome'] ?? "Cliente";
       box-shadow: 0 3px 5px rgba(0, 0, 0, 0.7);
     }
 
-    .navbar-brand {
-      font-weight: 900;
-      font-size: 1.8rem;
-      letter-spacing: 3px;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: #fff;
-    }
-
     .navbar-brand img {
       height: 50px;
     }
 
-    .nav-link {
-      color: #eee !important;
+    .btn-sair-nav {
+      color: var(--text-muted) !important;
       font-weight: 600;
-      letter-spacing: 1px;
-      transition: 0.3s;
+      text-decoration: none;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .nav-link:hover,
-    .nav-link.active {
-      color: #e60000 !important;
+    .btn-sair-nav:hover {
+      color: var(--text-light) !important;
     }
 
     /* HERO & CONTEÚDO */
