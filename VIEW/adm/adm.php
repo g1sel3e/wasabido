@@ -264,6 +264,7 @@ $nome = $_SESSION['nome'] ?? "Administrador";
             <div class="icon-wrapper">
               <i class="bi bi-box-seam"></i>
             </div>
+             Levantou 5px;
             <h5>Produtos</h5>
             <p>Adicione ou edite itens do cardápio digital</p>
             <a href="produtos.php" class="btn btn-admin">Acessar</a>
@@ -278,6 +279,17 @@ $nome = $_SESSION['nome'] ?? "Administrador";
             <h5>Usuários</h5>
             <p>Controle de equipe, entregadores e clientes</p>
             <a href="listadoE.php" class="btn btn-admin">Acessar</a>
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-md-4">
+          <div class="card-admin">
+            <div class="icon-wrapper">
+              <i class="bi bi-person-plus-fill"></i>
+            </div>
+            <h5>Novo Admin</h5>
+            <p>Realize o cadastro de novos administradores no sistema</p>
+            <a href="cadastroA.php" class="btn btn-admin">Cadastrar</a>
           </div>
         </div>
 
