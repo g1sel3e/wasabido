@@ -25,11 +25,16 @@ $filtro_ordem = isset($_GET['ordem']) ? $_GET['ordem'] : 'recentes';
 
 if (!empty($avaliacoes_originais)) {
     foreach ($avaliacoes_originais as $review) {
-        // Identifica o cargo da mesma forma que você faz no HTML
+        
+        // Identificação refinada do cargo/perfil
         $cargo = "Membro";
-        if (!empty($review['nome_cliente'])) $cargo = "Cliente";
-        elseif (!empty($review['nome_entregador'])) $cargo = "Entregador";
-        elseif (!empty($review['nome_admin'])) $cargo = "Administrador";
+        if (!empty($review['nome_cliente']) || (isset($review['perfil']) && strtolower($review['perfil']) == 'cliente')) {
+            $cargo = "Cliente";
+        } elseif (!empty($review['nome_entregador']) || (isset($review['perfil']) && strtolower($review['perfil']) == 'entregador')) {
+            $cargo = "Entregador";
+        } elseif (!empty($review['nome_admin']) || (isset($review['perfil']) && strtolower($review['perfil']) == 'administrador')) {
+            $cargo = "Administrador";
+        }
 
         // Aplica o filtro por perfil
         if ($filtro_perfil === 'todos' || strtolower($cargo) === strtolower($filtro_perfil)) {
@@ -120,7 +125,7 @@ if ($visitante_anonimo) {
       margin-top: 10px;
     }
 
-    /* NOVO DESIGN DOS FILTROS */
+    /* FILTROS */
     .filtro-container {
       background: linear-gradient(135deg, #141414 0%, #0d0d0d 100%);
       border: 1px solid #252525;
@@ -183,10 +188,6 @@ if ($visitante_anonimo) {
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(230, 0, 0, 0.3);
     }
-    
-    .btn-filtro:active {
-      transform: translateY(0);
-    }
 
     .estrelas i {
       color: #e60000;
@@ -195,20 +196,21 @@ if ($visitante_anonimo) {
       text-shadow: 0 0 6px rgba(230, 0, 0, 0.4);
     }
 
-    /* AVALIAÇÃO */
+    /* CAIXA DE AVALIAÇÃO */
     .avaliacao {
       background: #161616;
       border: 1px solid #222;
-      border-radius: 14px;
-      padding: 20px;
+      border-radius: 16px;
+      padding: 22px;
       display: flex;
       gap: 15px;
-      transition: 0.2s;
+      transition: all 0.2s ease;
       height: 100%;
     }
 
     .avaliacao:hover {
       border-color: #e60000;
+      box-shadow: 0 5px 15px rgba(230, 0, 0, 0.05);
     }
 
     .avatar {
@@ -222,6 +224,7 @@ if ($visitante_anonimo) {
       color: #fff;
       font-weight: bold;
       flex-shrink: 0;
+      font-size: 1.1rem;
     }
 
     .nome {
@@ -232,11 +235,14 @@ if ($visitante_anonimo) {
     .cargo {
       font-size: 0.85rem;
       color: #e60000;
+      font-weight: 500;
+      margin-bottom: 4px;
     }
 
     .comentario {
       color: #bbb;
-      margin-top: 5px;
+      margin-top: 8px;
+      font-size: 0.95rem;
     }
   </style>
 </head>
@@ -310,17 +316,18 @@ if ($visitante_anonimo) {
 
       <?php if (!empty($avaliacoes)): ?>
         <?php foreach ($avaliacoes as $review): 
-            $nomeExibido = "Membro do Sistema";
+            // Fallback inteligente para capturar o nome de quem avaliou
+            $nomeExibido = $review['nome'] ?? $review['usuario'] ?? $review['nome_usuario'] ?? "Membro do Sistema";
             $cargoExibido = "Membro";
 
-            if (!empty($review['nome_cliente'])) {
-                $nomeExibido = $review['nome_cliente'];
+            if (!empty($review['nome_cliente']) || (isset($review['perfil']) && strtolower($review['perfil']) == 'cliente')) {
+                if(!empty($review['nome_cliente'])) $nomeExibido = $review['nome_cliente'];
                 $cargoExibido = "Cliente";
-            } elseif (!empty($review['nome_entregador'])) {
-                $nomeExibido = $review['nome_entregador'];
+            } elseif (!empty($review['nome_entregador']) || (isset($review['perfil']) && strtolower($review['perfil']) == 'entregador')) {
+                if(!empty($review['nome_entregador'])) $nomeExibido = $review['nome_entregador'];
                 $cargoExibido = "Entregador";
-            } elseif (!empty($review['nome_admin'])) {
-                $nomeExibido = $review['nome_admin'];
+            } elseif (!empty($review['nome_admin']) || (isset($review['perfil']) && strtolower($review['perfil']) == 'administrador')) {
+                if(!empty($review['nome_admin'])) $nomeExibido = $review['nome_admin'];
                 $cargoExibido = "Administrador";
             }
 
@@ -336,7 +343,7 @@ if ($visitante_anonimo) {
               <div class="avatar"><?= htmlspecialchars($primeiraLetra) ?></div>
               <div>
                 <div class="nome"><?= htmlspecialchars($nomeExibido) ?></div>
-                <div class="cargo"><?= $cargoExibido ?></div>
+                <div class="cargo"><i class="bi bi-shield-check me-1"></i><?= $cargoExibido ?></div>
                 
                 <div class="estrelas">
                   <?php 
@@ -367,5 +374,6 @@ if ($visitante_anonimo) {
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
