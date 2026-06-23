@@ -25,16 +25,8 @@ function receberImagem($campo)
         // nome único
         $novoNome = "produto_" . uniqid() . "." . $extensao;
 
-        // Caminho absoluto baseado na raiz do arquivo atual
-        $pasta = __DIR__ . "/VIEW/produtos/";
-
-        // CRIA A PASTA SE NÃO EXISTIR E FORÇA A PERMISSÃO CORRETA
-        if (!is_dir($pasta)) {
-            // O uso do umask garante que a pasta nasça com a permissão que você definiu
-            $oldmask = umask(0);
-            mkdir($pasta, 0775, true);
-            umask($oldmask);
-        }
+        // 🚀 SOLUÇÃO RÁPIDA: Salva diretamente na mesma pasta onde está este script
+        $pasta = __DIR__ . "/";
 
         // move arquivo
         if (move_uploaded_file($tmp, $pasta . $novoNome)) {
