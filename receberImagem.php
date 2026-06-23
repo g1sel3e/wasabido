@@ -25,17 +25,20 @@ function receberImagem($campo)
         // nome único
         $novoNome = "produto_" . uniqid() . "." . $extensao;
 
-        // ✅ caminho absoluto correto
+        // Caminho absoluto baseado na raiz do arquivo atual
         $pasta = __DIR__ . "/VIEW/produtos/";
 
-        // cria pasta se não existir
+        // CRIA A PASTA SE NÃO EXISTIR E FORÇA A PERMISSÃO CORRETA
         if (!is_dir($pasta)) {
-            mkdir($pasta, 0777, true);
+            // O uso do umask garante que a pasta nasça com a permissão que você definiu
+            $oldmask = umask(0);
+            mkdir($pasta, 0775, true);
+            umask($oldmask);
         }
 
         // move arquivo
         if (move_uploaded_file($tmp, $pasta . $novoNome)) {
-            return $novoNome;
+            return $novoNome; // Retorna apenas o nome do arquivo para salvar no banco
         } else {
             return "";
         }
